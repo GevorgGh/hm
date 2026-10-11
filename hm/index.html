@@ -45,29 +45,88 @@
             <li><a data-i18n="text_1" href="#main"></a></li>
             <li><a data-i18n="text_2" href="#aboutUs"></a></li>
             <li><a data-i18n="text_3" href="#services"></a></li>
-
+            <li><a data-i18n="nav_reviews" href="#reviews"></a></li>
             <li><a data-i18n="text_5" href="#contactUs"></a></li>
         </ul>
-        <select style="padding: .5rem;" name="" id="languages" onchange="changeLanguage(this.value)">
-            <option value="hy" selected>Arm</option>
-            <option value="en">Eng</option>
-        </select>
+        <div class="header-actions">
+            <button type="button" id="colorMode" class="header-theme-btn" title="Toggle Theme" aria-label="Toggle Theme">
+                <svg class="bi bi-brightness-high-fill" fill="currentColor" height="20" viewbox="0 0 16 16" width="20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708">
+                    </path>
+                </svg>
+            </button>
+            <select name="languages" id="languages" onchange="changeLanguage(this.value)">
+                <option value="hy" selected>Arm</option>
+                <option value="en">Eng</option>
+            </select>
+            <button type="button" id="headerCtaBtn" class="header-consult-btn" data-i18n="header_consult"></button>
+        </div>
     </header>
-    <div id="colorMode">
-        <svg class="bi bi-brightness-high-fill" fill="#d12424" height="30" viewbox="0 0 16 16" width="30"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708">
-            </path>
-        </svg>
-    </div>
+
     <section id="main">
         <div id="mText">
+            <div class="hero-trust-badge">
+                <i class="bi bi-shield-fill-check"></i>
+                <span data-i18n="hero_badge"></span>
+            </div>
             <h1 data-i18n="text_6"></h1>
             <p data-i18n="text_7"></p>
+            <div class="hero-highlights">
+                <div class="hl-item"><i class="bi bi-check-circle-fill"></i> <span data-i18n="hero_hl1"></span></div>
+                <div class="hl-item"><i class="bi bi-check-circle-fill"></i> <span data-i18n="hero_hl2"></span></div>
+                <div class="hl-item"><i class="bi bi-check-circle-fill"></i> <span data-i18n="hero_hl3"></span></div>
+            </div>
             <div id="mBtns">
-                <button data-i18n="text_8" id="start"></button>
-                <button data-i18n="text_9" id="task"></button>
+                <button id="start" class="btn-hero-primary">
+                    <span data-i18n="text_8"></span>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+                <button id="task" class="btn-hero-secondary">
+                    <span data-i18n="text_9"></span>
+                    <i class="bi bi-compass"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mVisual" class="hero-visual">
+            <div class="hero-glass-card">
+                <div class="card-top-bar">
+                    <div class="brand-tag">
+                        <span class="live-dot"></span>
+                        <span data-i18n="card_live_status"></span>
+                    </div>
+                    <span class="shield-tag"><i class="bi bi-shield-check"></i> 2025 Audit Shield</span>
+                </div>
+                <div class="card-hero-metric">
+                    <span class="metric-label" data-i18n="card_stat1_title"></span>
+                    <h2 class="metric-value">֏ 0 <span class="metric-pill" data-i18n="card_stat1_val"></span></h2>
+                </div>
+                <div class="card-metrics-grid">
+                    <div class="metric-mini">
+                        <span class="mini-label" data-i18n="card_stat2_title"></span>
+                        <strong class="mini-val" data-i18n="card_stat2_val">100%</strong>
+                        <div class="mini-bar"><div class="mini-bar-fill" style="width: 100%;"></div></div>
+                    </div>
+                    <div class="metric-mini">
+                        <span class="mini-label" data-i18n="card_stat3_title"></span>
+                        <strong class="mini-val" data-i18n="card_stat3_val">֏ 45M+</strong>
+                        <div class="mini-bar"><div class="mini-bar-fill" style="width: 88%;"></div></div>
+                    </div>
+                </div>
+                <div class="card-footer-pill">
+                    <i class="bi bi-check2-circle"></i>
+                    <span>Պետական Եկամուտների Կոմիտեի (ՊԵԿ) լիարժեք համապատասխանություն</span>
+                </div>
+            </div>
+            <div class="hero-floating-pill pill-top">
+                <i class="bi bi-patch-check-fill"></i>
+                <span data-i18n="card_badge1"></span>
+            </div>
+            <div class="hero-floating-pill pill-bottom">
+                <i class="bi bi-file-earmark-lock2-fill"></i>
+                <span data-i18n="card_badge2"></span>
             </div>
         </div>
     </section>
@@ -81,29 +140,7 @@
                     <div class="pic pic1"></div>
                     <div>
                         <h2 data-i18n="text_12"></h2>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet omnis quod perspiciatis
-                            provident
-                            esse molestias quia quae quasi voluptatibus. Itaque necessitatibus pariatur architecto
-                            veritatis
-                            voluptatem quidem mollitia, numquam voluptates error libero in impedit blanditiis sunt omnis
-                            explicabo dolor aspernatur dicta velit at, placeat optio facere eius! Vel necessitatibus
-                            dicta
-                            hic magni nemo accusamus neque, exercitationem ipsa quos minima animi expedita non
-                            voluptatibus.
-                            Eveniet, commodi natus!
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quisquam in inventore officia unde
-                            non, numquam ratione culpa nesciunt neque cum iure, repellat sed et veritatis! Accusantium
-                            maiores natus asperiores delectus beatae, aut nostrum, ipsum perspiciatis incidunt harum
-                            quisquam labore ab esse corrupti veniam eligendi placeat! Enim corrupti quisquam officia
-                            labore
-                            tempora facilis? Quisquam, dolores. Doloribus minus aliquam vitae? Praesentium eum alias
-                            ipsa,
-                            vero, totam et eos sapiente quam dolore quidem perspiciatis reprehenderit veritatis id.
-                            Maiores
-                            sed, odio mollitia animi dolorum quisquam perspiciatis laudantium numquam, placeat fugit
-                            nobis
-                            ipsam qui ipsa a corrupti fugiat commodi. Alias odit hic accusamus rerum temporibus.
-                        </p>
+                        <p data-i18n="text_13"></p>
                     </div>
                 </div>
                 <div id="abT">
@@ -167,100 +204,268 @@
             </div>
         </div>
     </section>
-    <div id="nums">
-        <div class="num">
-            <h2 class="counter" data-target="10">0</h2>
-            <p data-i18n="text_23"></p>
+    <section id="numbers" class="numbers-section">
+        <div class="numbers-container">
+            <div class="numbers-grid">
+                <div class="num-card">
+                    <div class="num-icon"><i class="bi bi-briefcase-fill"></i></div>
+                    <div class="num-metric">
+                        <h2 class="counter" data-target="10" data-suffix="+">0</h2>
+                    </div>
+                    <h3 data-i18n="stat_exp_title"></h3>
+                    <p data-i18n="stat_exp_sub"></p>
+                </div>
+                <div class="num-card">
+                    <div class="num-icon"><i class="bi bi-buildings-fill"></i></div>
+                    <div class="num-metric">
+                        <h2 class="counter" data-target="250" data-suffix="+">0</h2>
+                    </div>
+                    <h3 data-i18n="stat_clients_title"></h3>
+                    <p data-i18n="stat_clients_sub"></p>
+                </div>
+                <div class="num-card">
+                    <div class="num-icon"><i class="bi bi-shield-fill-check"></i></div>
+                    <div class="num-metric">
+                        <h2 class="counter" data-target="100" data-suffix="%">0</h2>
+                    </div>
+                    <h3 data-i18n="stat_audit_title"></h3>
+                    <p data-i18n="stat_audit_sub"></p>
+                </div>
+                <div class="num-card">
+                    <div class="num-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div class="num-metric">
+                        <h2 class="counter" data-target="500" data-prefix="֏ " data-suffix="M+">0</h2>
+                    </div>
+                    <h3 data-i18n="stat_capital_title"></h3>
+                    <p data-i18n="stat_capital_sub"></p>
+                </div>
+            </div>
+
+            <div class="industries-bar">
+                <h4 class="industries-title" data-i18n="industries_title"></h4>
+                <div class="industries-pills">
+                    <div class="ind-pill"><i class="bi bi-laptop"></i> <span data-i18n="ind_it"></span></div>
+                    <div class="ind-pill"><i class="bi bi-shop"></i> <span data-i18n="ind_trade"></span></div>
+                    <div class="ind-pill"><i class="bi bi-building"></i> <span data-i18n="ind_const"></span></div>
+                    <div class="ind-pill"><i class="bi bi-cup-hot"></i> <span data-i18n="ind_horeca"></span></div>
+                    <div class="ind-pill"><i class="bi bi-gear-wide-connected"></i> <span data-i18n="ind_prod"></span></div>
+                    <div class="ind-pill"><i class="bi bi-heart-pulse"></i> <span data-i18n="ind_med"></span></div>
+                </div>
+            </div>
         </div>
-        <div class="num">
-            <h2 class="counter" data-target="60">0</h2>
-            <p data-i18n="text_24"></p>
-        </div>
-        <div class="num">
-            <h2 class="counter" data-target="60">0</h2>
-            <p data-i18n="text_25"></p>
-        </div>
-        <div class="num">
-            <h2 class="counter" data-target="5">0</h2>
-            <p data-i18n="text_26"></p>
-        </div>
-    </div>
+    </section>
     <section id="services">
         <div id="serv">
             <h2 class="hh" data-i18n="text_27"></h2>
-            <p class="pp" data-i18n="text_28"></p>
-        </div>
-        <div id="ser">
-            <!-- <div class="row"> -->
+                    <div id="ser">
             <div class="service" id="tax">
-                <svg viewbox="-64 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9zm-153 31V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zM64 72c0-4.42 3.58-8 8-8h80c4.42 0 8 3.58 8 8v16c0 4.42-3.58 8-8 8H72c-4.42 0-8-3.58-8-8V72zm0 80v-16c0-4.42 3.58-8 8-8h80c4.42 0 8 3.58 8 8v16c0 4.42-3.58 8-8 8H72c-4.42 0-8-3.58-8-8zm144 263.88V440c0 4.42-3.58 8-8 8h-16c-4.42 0-8-3.58-8-8v-24.29c-11.29-.58-22.27-4.52-31.37-11.35-3.9-2.93-4.1-8.77-.57-12.14l11.75-11.21c2.77-2.64 6.89-2.76 10.13-.73 3.87 2.42 8.26 3.72 12.82 3.72h28.11c6.5 0 11.8-5.92 11.8-13.19 0-5.95-3.61-11.19-8.77-12.73l-45-13.5c-18.59-5.58-31.58-23.42-31.58-43.39 0-24.52 19.05-44.44 42.67-45.07V232c0-4.42 3.58-8 8-8h16c4.42 0 8 3.58 8 8v24.29c11.29.58 22.27 4.51 31.37 11.35 3.9 2.93 4.1 8.77.57 12.14l-11.75 11.21c-2.77 2.64-6.89 2.76-10.13.73-3.87-2.43-8.26-3.72-12.82-3.72h-28.11c-6.5 0-11.8 5.92-11.8 13.19 0 5.95 3.61 11.19 8.77 12.73l45 13.5c18.59 5.58 31.58 23.42 31.58 43.39 0 24.53-19.05 44.44-42.67 45.07z">
-                    </path>
-                </svg>
-                <div>
+                <div class="service-icon-box">
+                    <svg viewbox="-64 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9zm-153 31V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zM64 72c0-4.42 3.58-8 8-8h80c4.42 0 8 3.58 8 8v16c0 4.42-3.58 8-8 8H72c-4.42 0-8-3.58-8-8V72zm0 80v-16c0-4.42 3.58-8 8-8h80c4.42 0 8 3.58 8 8v16c0 4.42-3.58 8-8 8H72c-4.42 0-8-3.58-8-8zm144 263.88V440c0 4.42-3.58 8-8 8h-16c-4.42 0-8-3.58-8-8v-24.29c-11.29-.58-22.27-4.52-31.37-11.35-3.9-2.93-4.1-8.77-.57-12.14l11.75-11.21c2.77-2.64 6.89-2.76 10.13-.73 3.87 2.42 8.26 3.72 12.82 3.72h28.11c6.5 0 11.8-5.92 11.8-13.19 0-5.95-3.61-11.19-8.77-12.73l-45-13.5c-18.59-5.58-31.58-23.42-31.58-43.39 0-24.52 19.05-44.44 42.67-45.07V232c0-4.42 3.58-8 8-8h16c4.42 0 8 3.58 8 8v24.29c11.29.58 22.27 4.51 31.37 11.35 3.9 2.93 4.1 8.77.57 12.14l-11.75 11.21c-2.77 2.64-6.89 2.76-10.13.73-3.87-2.43-8.26-3.72-12.82-3.72h-28.11c-6.5 0-11.8 5.92-11.8 13.19 0-5.95 3.61 11.19 8.77 12.73l45 13.5c18.59 5.58 31.58 23.42 31.58 43.39 0 24.53-19.05 44.44-42.67 45.07z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="service-content">
                     <h2 data-i18n="text_29"></h2>
                     <p data-i18n="text_30"></p>
                 </div>
+                <div class="service-action">
+                    <span data-i18n="service_learn"></span>
+                    <i class="bi bi-arrow-right"></i>
+                </div>
             </div>
             <div class="service" id="fin">
-                <svg class="bi bi-pie-chart-fill" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M15.985 8.5H8.207l-5.5 5.5a8 8 0 0 0 13.277-5.5zM2 13.292A8 8 0 0 1 7.5.015v7.778zM8.5.015V7.5h7.485A8 8 0 0 0 8.5.015">
-                    </path>
-                </svg>
-                <div>
+                <div class="service-icon-box">
+                    <svg class="bi bi-pie-chart-fill" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M15.985 8.5H8.207l-5.5 5.5a8 8 0 0 0 13.277-5.5zM2 13.292A8 8 0 0 1 7.5.015v7.778zM8.5.015V7.5h7.485A8 8 0 0 0 8.5.015">
+                        </path>
+                    </svg>
+                </div>
+                <div class="service-content">
                     <h2 data-i18n="text_31"></h2>
                     <p data-i18n="text_32"></p>
                 </div>
+                <div class="service-action">
+                    <span data-i18n="service_learn"></span>
+                    <i class="bi bi-arrow-right"></i>
+                </div>
             </div>
             <div class="service" id="buss">
-                <svg class="bi bi-bank" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="m8 0 6.61 3h.89a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v7a.5.5 0 0 1 .485.38l.5 2a.498.498 0 0 1-.485.62H.5a.498.498 0 0 1-.485-.62l.5-2A.5.5 0 0 1 1 13V6H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 3h.89zM3.777 3h8.447L8 1zM2 6v7h1V6zm2 0v7h2.5V6zm3.5 0v7h1V6zm2 0v7H12V6zM13 6v7h1V6zm2-1V4H1v1zm-.39 9H1.39l-.25 1h13.72z">
-                    </path>
-                </svg>
-                <div>
+                <div class="service-icon-box">
+                    <svg class="bi bi-bank" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="m8 0 6.61 3h.89a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v7a.5.5 0 0 1 .485.38l.5 2a.498.498 0 0 1-.485.62H.5a.498.498 0 0 1-.485-.62l.5-2A.5.5 0 0 1 1 13V6H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 3h.89zM3.777 3h8.447L8 1zM2 6v7h1V6zm2 0v7h2.5V6zm3.5 0v7h1V6zm2 0v7H12V6zM13 6v7h1V6zm2-1V4H1v1zm-.39 9H1.39l-.25 1h13.72z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="service-content">
                     <h2 data-i18n="text_33"></h2>
                     <p data-i18n="text_34"></p>
                 </div>
+                <div class="service-action">
+                    <span data-i18n="service_learn"></span>
+                    <i class="bi bi-arrow-right"></i>
+                </div>
             </div>
-            <!-- </div> -->
-            <!-- <div class="row"> -->
             <div class="service" id="tAdv">
-                <svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M256 32C114.62 32 0 125.12 0 240c0 49.56 21.41 95.01 57.02 130.74C44.46 421.05 2.7 465.97 2.2 466.5A7.995 7.995 0 0 0 8 480c66.26 0 115.99-31.75 140.6-51.38C181.29 440.93 217.59 448 256 448c141.38 0 256-93.12 256-208S397.38 32 256 32zm24 302.44V352c0 8.84-7.16 16-16 16h-16c-8.84 0-16-7.16-16-16v-17.73c-11.42-1.35-22.28-5.19-31.78-11.46-6.22-4.11-6.82-13.11-1.55-18.38l17.52-17.52c3.74-3.74 9.31-4.24 14.11-2.03 3.18 1.46 6.66 2.22 10.26 2.22h32.78c4.66 0 8.44-3.78 8.44-8.42 0-3.75-2.52-7.08-6.12-8.11l-50.07-14.3c-22.25-6.35-40.01-24.71-42.91-47.67-4.05-32.07 19.03-59.43 49.32-63.05V128c0-8.84 7.16-16 16-16h16c8.84 0 16 7.16 16 16v17.73c11.42 1.35 22.28 5.19 31.78 11.46 6.22 4.11 6.82 13.11 1.55 18.38l-17.52 17.52c-3.74 3.74-9.31 4.24-14.11 2.03a24.516 24.516 0 0 0-10.26-2.22h-32.78c-4.66 0-8.44 3.78-8.44 8.42 0 3.75 2.52 7.08 6.12 8.11l50.07 14.3c22.25 6.36 40.01 24.71 42.91 47.67 4.05 32.06-19.03 59.42-49.32 63.04z">
-                    </path>
-                </svg>
-                <div>
+                <div class="service-icon-box">
+                    <svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M256 32C114.62 32 0 125.12 0 240c0 49.56 21.41 95.01 57.02 130.74C44.46 421.05 2.7 465.97 2.2 466.5A7.995 7.995 0 0 0 8 480c66.26 0 115.99-31.75 140.6-51.38C181.29 440.93 217.59 448 256 448c141.38 0 256-93.12 256-208S397.38 32 256 32zm24 302.44V352c0 8.84-7.16 16-16 16h-16c-8.84 0-16-7.16-16-16v-17.73c-11.42-1.35-22.28-5.19-31.78-11.46-6.22-4.11-6.82-13.11-1.55-18.38l17.52-17.52c3.74-3.74 9.31-4.24 14.11-2.03 3.18 1.46 6.66 2.22 10.26 2.22h32.78c4.66 0 8.44-3.78 8.44-8.42 0-3.75-2.52-7.08-6.12-8.11l-50.07-14.3c-22.25-6.35-40.01-24.71-42.91-47.67-4.05-32.07 19.03-59.43 49.32-63.05V128c0-8.84 7.16-16 16-16h16c8.84 0 16 7.16 16 16v17.73c11.42 1.35 22.28 5.19 31.78 11.46 6.22 4.11 6.82 13.11 1.55 18.38l-17.52 17.52c-3.74 3.74-9.31 4.24-14.11 2.03a24.516 24.516 0 0 0-10.26-2.22h-32.78c-4.66 0-8.44 3.78-8.44 8.42 0 3.75 2.52 7.08 6.12 8.11l50.07 14.3c22.25 6.36 40.01 24.71 42.91 47.67 4.05 32.06-19.03 59.42-49.32 63.04z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="service-content">
                     <h2 data-i18n="text_35"></h2>
                     <p data-i18n="text_36"></p>
                 </div>
+                <div class="service-action">
+                    <span data-i18n="service_learn"></span>
+                    <i class="bi bi-arrow-right"></i>
+                </div>
             </div>
             <div class="service" id="aud">
-                <svg viewbox="0 -64 640 640" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M256 336h-.02c0-16.18 1.34-8.73-85.05-181.51-17.65-35.29-68.19-35.36-85.87 0C-2.06 328.75.02 320.33.02 336H0c0 44.18 57.31 80 128 80s128-35.82 128-80zM128 176l72 144H56l72-144zm511.98 160c0-16.18 1.34-8.73-85.05-181.51-17.65-35.29-68.19-35.36-85.87 0-87.12 174.26-85.04 165.84-85.04 181.51H384c0 44.18 57.31 80 128 80s128-35.82 128-80h-.02zM440 320l72-144 72 144H440zm88 128H352V153.25c23.51-10.29 41.16-31.48 46.39-57.25H528c8.84 0 16-7.16 16-16V48c0-8.84-7.16-16-16-16H383.64C369.04 12.68 346.09 0 320 0s-49.04 12.68-63.64 32H112c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h129.61c5.23 25.76 22.87 46.96 46.39 57.25V448H112c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h416c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z">
-                    </path>
-                </svg>
-                <div>
+                <div class="service-icon-box">
+                    <svg viewbox="0 -64 640 640" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M256 336h-.02c0-16.18 1.34-8.73-85.05-181.51-17.65-35.29-68.19-35.36-85.87 0C-2.06 328.75.02 320.33.02 336H0c0 44.18 57.31 80 128 80s128-35.82 128-80zM128 176l72 144H56l72-144zm511.98 160c0-16.18 1.34-8.73-85.05-181.51-17.65-35.29-68.19-35.36-85.87 0-87.12 174.26-85.04 165.84-85.04 181.51H384c0 44.18 57.31 80 128 80s128-35.82 128-80h-.02zM440 320l72-144 72 144H440zm88 128H352V153.25c23.51-10.29 41.16-31.48 46.39-57.25H528c8.84 0 16-7.16 16-16V48c0-8.84-7.16-16-16-16H383.64C369.04 12.68 346.09 0 320 0s-49.04 12.68-63.64 32H112c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h129.61c5.23 25.76 22.87 46.96 46.39 57.25V448H112c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h416c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="service-content">
                     <h2 data-i18n="text_37"></h2>
                     <p data-i18n="text_38"></p>
                 </div>
-            </div>
-            <div class="service" id="inh">
-                <svg viewbox="0 -32 576 576" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M271.06,144.3l54.27,14.3a8.59,8.59,0,0,1,6.63,8.1c0,4.6-4.09,8.4-9.12,8.4h-35.6a30,30,0,0,1-11.19-2.2c-5.24-2.2-11.28-1.7-15.3,2l-19,17.5a11.68,11.68,0,0,0-2.25,2.66,11.42,11.42,0,0,0,3.88,15.74,83.77,83.77,0,0,0,34.51,11.5V240c0,8.8,7.83,16,17.37,16h17.37c9.55,0,17.38-7.2,17.38-16V222.4c32.93-3.6,57.84-31,53.5-63-3.15-23-22.46-41.3-46.56-47.7L282.68,97.4a8.59,8.59,0,0,1-6.63-8.1c0-4.6,4.09-8.4,9.12-8.4h35.6A30,30,0,0,1,332,83.1c5.23,2.2,11.28,1.7,15.3-2l19-17.5A11.31,11.31,0,0,0,368.47,61a11.43,11.43,0,0,0-3.84-15.78,83.82,83.82,0,0,0-34.52-11.5V16c0-8.8-7.82-16-17.37-16H295.37C285.82,0,278,7.2,278,16V33.6c-32.89,3.6-57.85,31-53.51,63C227.63,119.6,247,137.9,271.06,144.3ZM565.27,328.1c-11.8-10.7-30.2-10-42.6,0L430.27,402a63.64,63.64,0,0,1-40,14H272a16,16,0,0,1,0-32h78.29c15.9,0,30.71-10.9,33.25-26.6a31.2,31.2,0,0,0,.46-5.46A32,32,0,0,0,352,320H192a117.66,117.66,0,0,0-74.1,26.29L71.4,384H16A16,16,0,0,0,0,400v96a16,16,0,0,0,16,16H372.77a64,64,0,0,0,40-14L564,377a32,32,0,0,0,1.28-48.9Z">
-                    </path>
-                </svg>
-                <div>
-                    <h2 data-i18n="text_39"></h2>
-                    <p data-i18n="text_40"></p>
+                <div class="service-action">
+                    <span data-i18n="service_learn"></span>
+                    <i class="bi bi-arrow-right"></i>
                 </div>
             </div>
+        </div>     </div>
             <!-- </div> -->
+        </div>
+    </section>
+
+    <!-- Social Proof & Client Testimonials Section -->
+    <section id="reviews" class="reviews-section">
+        <div class="reviews-container">
+            <div class="reviews-header">
+                <div class="section-tag"><i class="bi bi-chat-square-quote-fill"></i> <span data-i18n="reviews_badge"></span></div>
+                <h2 class="hh" data-i18n="reviews_title"></h2>
+                <p class="pp" data-i18n="reviews_subtitle"></p>
+            </div>
+
+            <div class="testimonials-slider">
+                <button type="button" id="revPrev" class="carousel-nav-btn prev-btn" aria-label="Previous Review">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+
+                <div class="testimonials-viewport">
+                    <div id="revTrack" class="testimonials-track">
+                        <!-- Review Card 1 -->
+                        <div class="testimonial-card">
+                            <div class="card-header-row">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <span class="ind-tag" data-i18n="rev1_tag"></span>
+                            </div>
+                            <blockquote class="testimonial-quote" data-i18n="rev1_quote"></blockquote>
+                            <div class="client-meta">
+                                <div class="client-avatar avatar-1">AG</div>
+                                <div class="client-info">
+                                    <h4 data-i18n="rev1_author"></h4>
+                                    <span data-i18n="rev1_role"></span>
+                                </div>
+                                <i class="bi bi-patch-check-fill verified-badge" title="Verified Client"></i>
+                            </div>
+                        </div>
+
+                        <!-- Review Card 2 -->
+                        <div class="testimonial-card">
+                            <div class="card-header-row">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <span class="ind-tag" data-i18n="rev2_tag"></span>
+                            </div>
+                            <blockquote class="testimonial-quote" data-i18n="rev2_quote"></blockquote>
+                            <div class="client-meta">
+                                <div class="client-avatar avatar-2">AS</div>
+                                <div class="client-info">
+                                    <h4 data-i18n="rev2_author"></h4>
+                                    <span data-i18n="rev2_role"></span>
+                                </div>
+                                <i class="bi bi-patch-check-fill verified-badge" title="Verified Client"></i>
+                            </div>
+                        </div>
+
+                        <!-- Review Card 3 -->
+                        <div class="testimonial-card">
+                            <div class="card-header-row">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <span class="ind-tag" data-i18n="rev3_tag"></span>
+                            </div>
+                            <blockquote class="testimonial-quote" data-i18n="rev3_quote"></blockquote>
+                            <div class="client-meta">
+                                <div class="client-avatar avatar-3">KH</div>
+                                <div class="client-info">
+                                    <h4 data-i18n="rev3_author"></h4>
+                                    <span data-i18n="rev3_role"></span>
+                                </div>
+                                <i class="bi bi-patch-check-fill verified-badge" title="Verified Client"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="revNext" class="carousel-nav-btn next-btn" aria-label="Next Review">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Dots Indicator -->
+            <div id="revDots" class="carousel-dots">
+                <span class="dot active" data-index="0"></span>
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+            </div>
+
+            <!-- Trust Accreditation Ribbons -->
+            <div class="trust-ribbon">
+                <div class="trust-ribbon-item">
+                    <i class="bi bi-shield-check"></i>
+                    <span data-i18n="badge_pek"></span>
+                </div>
+                <div class="trust-ribbon-item">
+                    <i class="bi bi-laptop"></i>
+                    <span data-i18n="badge_software"></span>
+                </div>
+                <div class="trust-ribbon-item">
+                    <i class="bi bi-file-earmark-lock2-fill"></i>
+                    <span data-i18n="badge_nda"></span>
+                </div>
+                <div class="trust-ribbon-item">
+                    <i class="bi bi-award-fill"></i>
+                    <span data-i18n="badge_insured"></span>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -269,7 +474,7 @@
             <h2 class="hh" data-i18n="text_42"></h2>
             <p class="pp" data-i18n="text_43"></p>
         </div>
-        <div class="con" data-i18n="text_53">
+        <div class="con">
             <div id="cont">
                 <div class="future">
                     <h2 class="hh" data-i18n="text_44"></h2>
@@ -296,7 +501,7 @@
                         </svg>
                         <div>
                             <h3 data-i18n="text_48"></h3>
-                            <p>(+374) 10 123-456</p>
+                            <p><a href="tel:+37455238228" style="color: inherit; text-decoration: none;">+374 55 238228</a></p>
                         </div>
                     </div>
                     <!-- </div> -->
@@ -327,6 +532,49 @@
                 </div>
             </div>
 
+            <!-- High-Converting On-Page Consultation Form -->
+            <form id="contUs" class="consultation-form onpage-form">
+                <div class="form-header">
+                    <span class="form-badge"><i class="bi bi-shield-check"></i> <span data-i18n="form_guarantee"></span></span>
+                    <h3 data-i18n="modal_title"></h3>
+                    <p data-i18n="modal_subtitle"></p>
+                </div>
+                <div class="form-field">
+                    <label data-i18n="form_name"></label>
+                    <input type="text" name="name" required placeholder="Ձեր Անունը / Ընկերությունը" data-i18n-ph="form_name" />
+                </div>
+                <div class="form-field">
+                    <label data-i18n="form_phone"></label>
+                    <input type="tel" name="phone" required placeholder="+374 (__) __-__-__" data-i18n-ph="form_phone" />
+                </div>
+                <div class="form-field">
+                    <label data-i18n="form_email"></label>
+                    <input type="email" name="email" placeholder="example@mail.com" data-i18n-ph="form_email" />
+                </div>
+                <div class="form-field">
+                    <label data-i18n="form_service"></label>
+                    <select name="service" required>
+                        <option value="" disabled selected data-i18n="form_service"></option>
+                        <option value="tax" data-i18n="form_service_tax"></option>
+                        <option value="accounting" data-i18n="form_service_acc"></option>
+                        <option value="audit" data-i18n="form_service_audit"></option>
+                        <option value="financial_planning" data-i18n="form_service_fin"></option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label data-i18n="form_message"></label>
+                    <textarea name="message" id="message" rows="3" placeholder="Կարճ նկարագրեք Ձեր հարցը..." data-i18n-ph="form_message"></textarea>
+                </div>
+                <button type="submit" id="submit" class="form-submit-btn">
+                    <span class="btn-text" data-i18n="form_submit"></span>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+                <div id="onpageSuccess" class="form-success-message" style="display: none;">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <strong data-i18n="form_success_title"></strong>
+                    <span data-i18n="form_success_desc"></span>
+                </div>
+            </form>
         </div>
     </section>
     <footer id="footer">
@@ -360,7 +608,7 @@
             </div>
             <div class="foot">
                 <h1 class="hh" data-i18n="text_55"></h1>
-                <ol data-i18n="text_59">
+                <ol>
                     <li><a data-i18n="text_56" href="#main"></a></li>
                     <li><a data-i18n="text_57" href="#aboutUs"></a></li>
                     <li><a data-i18n="text_58" href="#services"></a></li>
@@ -376,7 +624,6 @@
                     <li><a data-i18n="text_64" href="#services"></a></li>
                     <li><a data-i18n="text_65" href="#tax"></a></li>
                     <li><a data-i18n="text_66" href="#tax"></a></li>
-                    <li><a data-i18n="text_67" href="#tax"></a></li>
                 </ol>
             </div>
         </div>
@@ -384,6 +631,76 @@
             <p data-i18n="text_68"></p>
         </div>
     </footer>
+
+    <!-- Floating WhatsApp / Call / Consultation Quick Action Dock -->
+    <div id="floatingQuickActions" class="floating-dock">
+        <button id="floatingBookBtn" class="floating-btn floating-book" title="Book Free Consultation" aria-label="Book Consultation">
+            <span class="floating-pulse"></span>
+            <i class="bi bi-calendar2-check-fill"></i>
+            <span class="floating-label" data-i18n="floating_book"></span>
+        </button>
+        <a id="floatingWhatsappBtn" class="floating-btn floating-wa" href="https://wa.me/37455238228" target="_blank" rel="noopener noreferrer" title="WhatsApp Chat" aria-label="WhatsApp">
+            <i class="bi bi-whatsapp"></i>
+            <span class="floating-label" data-i18n="floating_whatsapp"></span>
+        </a>
+        <a id="floatingCallBtn" class="floating-btn floating-call" href="tel:+37455238228" title="Direct Call" aria-label="Call">
+            <i class="bi bi-telephone-fill"></i>
+            <span class="floating-label" data-i18n="floating_call"></span>
+        </a>
+    </div>
+
+    <!-- Consultation Modal -->
+    <div id="consultationModal" class="modal-backdrop" aria-hidden="true" role="dialog">
+        <div class="modal-card">
+            <button id="modalCloseBtn" class="modal-close" aria-label="Close modal">&times;</button>
+            <div class="modal-header">
+                <span class="form-badge"><i class="bi bi-shield-check"></i> <span data-i18n="form_guarantee"></span></span>
+                <h2 data-i18n="modal_title"></h2>
+                <p data-i18n="modal_subtitle"></p>
+            </div>
+            <form id="modalForm" class="consultation-form">
+                <div class="form-row">
+                    <div class="form-field">
+                        <label data-i18n="form_name"></label>
+                        <input type="text" name="name" required placeholder="Ձեր Անունը / Ընկերությունը" data-i18n-ph="form_name" />
+                    </div>
+                    <div class="form-field">
+                        <label data-i18n="form_phone"></label>
+                        <input type="tel" name="phone" required placeholder="+374 (__) __-__-__" data-i18n-ph="form_phone" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label data-i18n="form_email"></label>
+                        <input type="email" name="email" placeholder="example@mail.com" data-i18n-ph="form_email" />
+                    </div>
+                    <div class="form-field">
+                        <label data-i18n="form_service"></label>
+                        <select name="service" required>
+                            <option value="" disabled selected data-i18n="form_service"></option>
+                            <option value="tax" data-i18n="form_service_tax"></option>
+                            <option value="accounting" data-i18n="form_service_acc"></option>
+                            <option value="audit" data-i18n="form_service_audit"></option>
+                            <option value="financial_planning" data-i18n="form_service_fin"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label data-i18n="form_message"></label>
+                    <textarea name="message" rows="3" placeholder="Կարճ նկարագրեք Ձեր հարցը..." data-i18n-ph="form_message"></textarea>
+                </div>
+                <button type="submit" class="form-submit-btn">
+                    <span class="btn-text" data-i18n="form_submit"></span>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+            </form>
+            <div id="modalSuccess" class="form-success-message" style="display: none;">
+                <i class="bi bi-check-circle-fill"></i>
+                <h3 data-i18n="form_success_title"></h3>
+                <p data-i18n="form_success_desc"></p>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

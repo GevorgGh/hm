@@ -1,33 +1,37 @@
-localStorage.setItem("lang", "hy");
+if (!localStorage.getItem("lang")) {
+  localStorage.setItem("lang", "hy");
+}
 
-document.querySelectorAll('body *:not(svg):not(path):not(g):not(circle):not(rect):not(.rev):not(.rev *):not(#c > p)').forEach(el => {
+document.querySelectorAll('body *:not(svg):not(path):not(g):not(circle):not(rect):not(.rev):not(.rev *):not(#c > p):not(#header):not(#header *):not(#mVisual):not(#mVisual *):not(.floating-dock):not(.floating-dock *):not(.modal-backdrop):not(.modal-backdrop *):not(.numbers-section):not(.numbers-section *):not(.reviews-section):not(.reviews-section *)').forEach(el => {
   el.classList.add('hidden');
 });
 
 let rev = document.querySelectorAll(".rev").forEach(el => {
   console.log(el.children);
-
 })
 
 const counters = document.querySelectorAll('.counter');
 
 function animateCounter(element) {
-  const targetNumber = +element.getAttribute('data-target');
-  const duration = 1000;
+  const targetNumber = +element.getAttribute('data-target') || 0;
+  const prefix = element.getAttribute('data-prefix') || '';
+  const suffix = element.getAttribute('data-suffix') || '';
+  const duration = 1200;
   let startTime = null;
 
   function step(timestamp) {
     if (!startTime) startTime = timestamp;
     const progress = timestamp - startTime;
     const progressRatio = Math.min(progress / duration, 1);
-    const value = Math.floor(progressRatio * targetNumber);
+    const easeProgress = 1 - Math.pow(1 - progressRatio, 3);
+    const value = Math.floor(easeProgress * targetNumber);
 
-    element.textContent = value;
+    element.textContent = prefix + value + suffix;
 
     if (progressRatio < 1) {
       requestAnimationFrame(step);
     } else {
-      element.textContent = targetNumber;
+      element.textContent = prefix + targetNumber + suffix;
     }
   }
 
@@ -229,7 +233,216 @@ function changeLanguage(lang) {
     }
   });
 
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => {
+    const key = el.getAttribute("data-i18n-ph");
+    if (translations[lang] && translations[lang][key]) {
+      el.setAttribute("placeholder", translations[lang][key]);
+    }
+  });
+
   localStorage.setItem("lang", lang);
   const sel = document.getElementById("languages");
   if (sel) sel.value = lang;
 }
+
+/* ===================================================
+   Consultation Modal & Floating CTA Logic
+=================================================== */
+const consultationModal = document.getElementById("consultationModal");
+const modalCloseBtn = document.getElementById("modalCloseBtn");
+const floatingBookBtn = document.getElementById("floatingBookBtn");
+
+function openConsultationModal() {
+  if (consultationModal) {
+    consultationModal.classList.add("active");
+    consultationModal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeConsultationModal() {
+  if (consultationModal) {
+    consultationModal.classList.remove("active");
+    consultationModal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+}
+
+if (floatingBookBtn) {
+  floatingBookBtn.addEventListener("click", openConsultationModal);
+}
+
+if (start) {
+  start.addEventListener("click", (e) => {
+    e.preventDefault();
+    openConsultationModal();
+  });
+}
+
+if (modalCloseBtn) {
+  modalCloseBtn.addEventListener("click", closeConsultationModal);
+}
+
+if (consultationModal) {
+  consultationModal.addEventListener("click", (e) => {
+    if (e.target === consultationModal) {
+      closeConsultationModal();
+    }
+  });
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && consultationModal && consultationModal.classList.contains("active")) {
+    closeConsultationModal();
+  }
+});
+
+/* ===================================================
+   Interactive Form Submissions with Feedback
+=================================================== */
+function setupFormSubmission(formEl, successEl) {
+  if (!formEl) return;
+  formEl.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const submitBtn = formEl.querySelector("button[type='submit']");
+    const currentLang = localStorage.getItem("lang") || "hy";
+    const sendingText = (translations[currentLang] && translations[currentLang]["form_sending"]) || "Ուղարկվում է...";
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      const originalHtml = submitBtn.innerHTML;
+      submitBtn.innerHTML = `<span>${sendingText}</span>`;
+
+      setTimeout(() => {
+        formEl.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalHtml;
+
+        if (successEl) {
+          successEl.style.display = "flex";
+          setTimeout(() => {
+            successEl.style.display = "none";
+            if (formEl.id === "modalForm") {
+              closeConsultationModal();
+            }
+          }, 3000);
+        }
+      }, 600);
+    }
+  });
+}
+
+setupFormSubmission(document.getElementById("modalForm"), document.getElementById("modalSuccess"));
+setupFormSubmission(document.getElementById("contUs"), document.getElementById("onpageSuccess"));
+
+const headerCtaBtn = document.getElementById("headerCtaBtn");
+if (headerCtaBtn) {
+  headerCtaBtn.addEventListener("click", () => {
+    openConsultationModal();
+  });
+}
+
+const serviceMap = {
+  tax: "tax",
+  fin: "financial_planning",
+  buss: "accounting",
+  tAdv: "tax",
+  aud: "audit",
+  hr: "accounting"
+};
+
+document.querySelectorAll(".service").forEach(card => {
+  card.addEventListener("click", () => {
+    const cardId = card.id;
+    const serviceValue = serviceMap[cardId] || "tax";
+    const modalSelect = document.querySelector("#modalForm select[name='service']");
+    if (modalSelect) {
+      modalSelect.value = serviceValue;
+    }
+    openConsultationModal();
+  });
+});
+
+/* ===================================================
+   Testimonials Carousel Logic
+=================================================== */
+const revTrack = document.getElementById("revTrack");
+const revPrev = document.getElementById("revPrev");
+const revNext = document.getElementById("revNext");
+const revDots = document.querySelectorAll("#revDots .dot");
+let currentReviewIndex = 0;
+const totalReviews = document.querySelectorAll(".testimonial-card").length || 3;
+let autoReviewInterval = null;
+
+function updateReviewSlide(index) {
+  currentReviewIndex = (index + totalReviews) % totalReviews;
+  if (revTrack) {
+    revTrack.style.transform = `translateX(-${currentReviewIndex * 100}%)`;
+  }
+  revDots.forEach((dot, idx) => {
+    dot.classList.toggle("active", idx === currentReviewIndex);
+  });
+}
+
+function startAutoSlide() {
+  stopAutoSlide();
+  autoReviewInterval = setInterval(() => {
+    updateReviewSlide(currentReviewIndex + 1);
+  }, 6000);
+}
+
+function stopAutoSlide() {
+  if (autoReviewInterval) {
+    clearInterval(autoReviewInterval);
+    autoReviewInterval = null;
+  }
+}
+
+if (revPrev) {
+  revPrev.addEventListener("click", () => {
+    updateReviewSlide(currentReviewIndex - 1);
+    startAutoSlide();
+  });
+}
+
+if (revNext) {
+  revNext.addEventListener("click", () => {
+    updateReviewSlide(currentReviewIndex + 1);
+    startAutoSlide();
+  });
+}
+
+revDots.forEach((dot) => {
+  dot.addEventListener("click", () => {
+    const idx = parseInt(dot.getAttribute("data-index"), 10);
+    updateReviewSlide(idx);
+    startAutoSlide();
+  });
+});
+
+const testimonialsViewport = document.querySelector(".testimonials-viewport");
+if (testimonialsViewport) {
+  testimonialsViewport.addEventListener("mouseenter", stopAutoSlide);
+  testimonialsViewport.addEventListener("mouseleave", startAutoSlide);
+
+  let touchStartX = 0;
+  let touchEndX = 0;
+  testimonialsViewport.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  testimonialsViewport.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 45) {
+      updateReviewSlide(currentReviewIndex + 1);
+      startAutoSlide();
+    } else if (touchEndX - touchStartX > 45) {
+      updateReviewSlide(currentReviewIndex - 1);
+      startAutoSlide();
+    }
+  }, { passive: true });
+}
+
+startAutoSlide();
+
+
