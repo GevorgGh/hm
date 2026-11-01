@@ -8,11 +8,12 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>HM Consulting</title>
     <link href="./images/logo.svg" rel="icon" type="image/svg+xml" />
-    <link href="./style.css" rel="stylesheet" />
-    <script defer="" src="app.js"></script>
+    <link href="./style.css?v=2.3" rel="stylesheet" />
+    <script defer="" src="app.js?v=2.3"></script>
 </head>
 
 <body>
+    <div id="scrollProgressBar" class="scroll-progress-bar" aria-hidden="true"></div>
     <header id="header">
         <div id="logo">
             <a href="./index.html">
@@ -45,10 +46,14 @@
             <li><a data-i18n="text_1" href="#main"></a></li>
             <li><a data-i18n="text_2" href="#aboutUs"></a></li>
             <li><a data-i18n="text_3" href="#services"></a></li>
+            <li><a data-i18n="calc_badge" href="#calculatorSection"></a></li>
             <li><a data-i18n="nav_reviews" href="#reviews"></a></li>
             <li><a data-i18n="text_5" href="#contactUs"></a></li>
         </ul>
         <div class="header-actions">
+            <button type="button" id="soundToggle" class="header-theme-btn" title="Audio Haptics" aria-label="Toggle Audio Haptics">
+                <i class="bi bi-volume-up-fill" id="soundIcon"></i>
+            </button>
             <button type="button" id="colorMode" class="header-theme-btn" title="Toggle Theme" aria-label="Toggle Theme">
                 <svg class="bi bi-brightness-high-fill" fill="currentColor" height="20" viewbox="0 0 16 16" width="20"
                     xmlns="http://www.w3.org/2000/svg">
@@ -64,6 +69,31 @@
             <button type="button" id="headerCtaBtn" class="header-consult-btn" data-i18n="header_consult"></button>
         </div>
     </header>
+
+    <!-- Armenian Tax Pulse Live Status Banner (Feature 5) -->
+    <div id="taxPulseBanner" class="tax-pulse-bar">
+        <div class="tax-pulse-inner">
+            <div class="pulse-beacon">
+                <span class="beacon-glow"></span>
+                <i class="bi bi-calendar2-week-fill text-orange"></i>
+                <strong data-i18n="tax_pulse_title">ՊԵԿ Հարկային Օրացույց</strong>
+            </div>
+            <div class="pulse-info">
+                <span data-i18n="tax_pulse_desc">Հաջորդ հաշվետվության վերջնաժամկետին մնացել է՝</span>
+                <div class="countdown-group">
+                    <span class="digit-box"><strong id="taxDays">--</strong><small data-i18n="unit_days">օր</small></span>
+                    <span class="sep">:</span>
+                    <span class="digit-box"><strong id="taxHours">--</strong><small data-i18n="unit_hours">ժ</small></span>
+                    <span class="sep">:</span>
+                    <span class="digit-box"><strong id="taxMins">--</strong><small data-i18n="unit_mins">ր</small></span>
+                </div>
+            </div>
+            <button type="button" id="taxPulseBtn" class="pulse-cta-pill">
+                <span data-i18n="tax_pulse_btn">Պաշտպանվել Տուգանքից</span>
+                <i class="bi bi-shield-check"></i>
+            </button>
+        </div>
+    </div>
 
     <section id="main">
         <div id="mText">
@@ -132,73 +162,161 @@
     </section>
     <section id="aboutUs">
         <div id="abD">
-            <h1 class="hh" data-i18n="text_10"></h1>
-            <p class="pp" data-i18n="text_11"></p>
-            <div id="abL">
-                <div id="abImg">
-                    <!-- <img src="./images/calculator-385506_1280.jpg" alt="Pic1"> -->
-                    <div class="pic pic1"></div>
-                    <div>
-                        <h2 data-i18n="text_12"></h2>
-                        <p data-i18n="text_13"></p>
+            <h1 class="hh hidden" data-i18n="text_10"></h1>
+            <p class="pp hidden" data-i18n="text_11"></p>
+
+            <div class="about-hero-grid">
+                <!-- Parallax Image Card 1 -->
+                <div class="scroll-pic-card card-tilt hidden-left" data-tilt>
+                    <div class="scroll-pic-viewport">
+                        <img src="./images/calculator-385506_1280.jpg" alt="Accounting precision" class="scroll-pic-img" data-parallax-speed="0.1" />
+                        <div class="pic-shine"></div>
+                    </div>
+                    <div class="pic-floating-badge badge-top-right">
+                        <span class="live-pulse-dot"></span>
+                        <i class="bi bi-shield-check"></i>
+                        <span>0% Տուգանքի Երաշխիք</span>
+                    </div>
+                    <div class="pic-floating-badge badge-bottom-left">
+                        <i class="bi bi-cpu-fill"></i>
+                        <span>ArmSoft &amp; 1C Ավտոմատացում</span>
                     </div>
                 </div>
-                <div id="abT">
-                    <!-- <img src="./images/finance-7529921_1280.jpg" alt="Pic2"> -->
-                    <div class="pic pic2"></div>
-                    <div id="adv">
-                        <!-- <div class="row"> -->
-                        <div class="ab">
-                            <svg class="bi bi-check-lg" fill="#0056b3" height="40" viewbox="0 0 16 16" width="40"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z">
-                                </path>
-                            </svg>
-                            <div>
-                                <h3 data-i18n="text_14"><br /></h3>
-                                <span data-i18n="text_15"></span>
+
+                <!-- Text narrative -->
+                <div class="about-story-content hidden-right">
+                    <div class="story-tag">
+                        <i class="bi bi-star-fill"></i>
+                        <span>HM Consulting Standard</span>
+                    </div>
+                    <h2 data-i18n="text_12"></h2>
+                    <p data-i18n="text_13"></p>
+                    <div class="story-stats-strip">
+                        <div class="story-stat">
+                            <strong>10+</strong>
+                            <span data-i18n="stat_exp_title"></span>
+                        </div>
+                        <div class="story-stat-divider"></div>
+                        <div class="story-stat">
+                            <strong>250+</strong>
+                            <span data-i18n="stat_clients_title"></span>
+                        </div>
+                        <div class="story-stat-divider"></div>
+                        <div class="story-stat">
+                            <strong>100%</strong>
+                            <span data-i18n="stat_audit_title"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-secondary-grid">
+                <!-- Bento values -->
+                <div class="bento-values-grid">
+                    <div class="bento-card hidden stagger-1">
+                        <div class="bento-icon-box">
+                            <i class="bi bi-person-check-fill"></i>
+                        </div>
+                        <div class="bento-text">
+                            <h3 data-i18n="text_14"></h3>
+                            <p data-i18n="text_15"></p>
+                        </div>
+                    </div>
+                    <div class="bento-card hidden stagger-2">
+                        <div class="bento-icon-box">
+                            <i class="bi bi-file-earmark-lock2-fill"></i>
+                        </div>
+                        <div class="bento-text">
+                            <h3 data-i18n="text_16"></h3>
+                            <p data-i18n="text_17"></p>
+                        </div>
+                    </div>
+                    <div class="bento-card hidden stagger-3">
+                        <div class="bento-icon-box">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <div class="bento-text">
+                            <h3 data-i18n="text_19"></h3>
+                            <p data-i18n="text_20"></p>
+                        </div>
+                    </div>
+                    <div class="bento-card hidden stagger-4">
+                        <div class="bento-icon-box">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <div class="bento-text">
+                            <h3 data-i18n="text_21"></h3>
+                            <p data-i18n="text_22"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parallax Image Card 2 -->
+                <div class="scroll-pic-card card-tilt hidden-right" data-tilt>
+                    <div class="scroll-pic-viewport">
+                        <img src="./images/pexels-goumbik-590022.jpg" alt="Financial Analytics" class="scroll-pic-img" data-parallax-speed="0.15" />
+                        <div class="pic-shine"></div>
+                    </div>
+                    <div class="pic-floating-badge badge-top-left">
+                        <i class="bi bi-patch-check-fill text-blue"></i>
+                        <span>100% Գաղտնիություն &amp; NDA</span>
+                    </div>
+                    <div class="pic-floating-badge badge-bottom-right">
+                        <i class="bi bi-currency-exchange text-orange"></i>
+                        <span>֏ 45,000,000+ Օպտիմալացում</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Apple-Style Dynamic Showcase Cards (Scroll Pics Showcase) -->
+            <div class="scroll-showcase-section">
+                <div class="showcase-header hidden">
+                    <span class="section-tag"><i class="bi bi-layers-fill"></i> <span data-i18n="showcase_badge"></span></span>
+                    <h2 class="hh" data-i18n="showcase_title"></h2>
+                    <p class="pp" data-i18n="showcase_subtitle"></p>
+                </div>
+                
+                <div class="showcase-cards-row">
+                    <!-- Showcase Item 1 -->
+                    <div class="showcase-card card-tilt hidden stagger-1" data-tilt>
+                        <div class="showcase-media">
+                            <img src="./images/calculator-385506_1280.jpg" alt="1C Software" class="showcase-img" />
+                            <div class="showcase-overlay">
+                                <span class="showcase-tag" data-i18n="showcase_card1_tag"></span>
                             </div>
                         </div>
-                        <div class="ab">
-                            <svg fill="#0056b3" height="16" viewbox="0 0 16 16" width="16"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path clip-rule="evenodd"
-                                    d="M8 14.0664C8.02892 14.0606 8.05753 14.0533 8.08571 14.0445C8.15086 14.0247 8.23486 13.9902 8.33771 13.9412C8.54343 13.8424 8.80657 13.6875 9.10314 13.4749C9.84872 12.9274 10.5095 12.2688 11.0634 11.521C12.3723 9.77363 13.4694 7.11888 12.9946 3.4815C12.9838 3.40341 12.9517 3.32999 12.902 3.26964C12.8523 3.20929 12.7869 3.16445 12.7134 3.14025C12.1554 2.95388 11.2134 2.65025 10.2817 2.39212C9.33028 2.12875 8.45514 1.93363 8 1.93363V14.0664ZM5.49029 1.49C6.42029 1.23188 7.40857 1 8 1C8.59143 1 9.57971 1.23188 10.5097 1.49C11.4611 1.7525 12.4203 2.06312 12.9843 2.25125C13.2201 2.33074 13.4291 2.47653 13.5874 2.67186C13.7457 2.86719 13.8468 3.10415 13.8791 3.3555C14.39 7.27288 13.2046 10.1761 11.7663 12.0968C11.1561 12.9181 10.4289 13.6416 9.60886 14.2431C9.32559 14.4518 9.02502 14.6347 8.71057 14.79C8.47057 14.9055 8.21257 15 8 15C7.78743 15 7.53029 14.9055 7.28943 14.79C6.97498 14.6347 6.67441 14.4518 6.39114 14.2431C5.57107 13.6416 4.84387 12.9181 4.23372 12.0968C2.79543 10.1761 1.61 7.27288 2.12086 3.3555C2.15317 3.10415 2.25427 2.86719 2.41256 2.67186C2.57085 2.47653 2.77991 2.33074 3.01572 2.25125C3.83451 1.97738 4.6596 1.72356 5.49029 1.49Z"
-                                    fill-rule="evenodd"></path>
-                            </svg>
-                            <div>
-                                <h3 data-i18n="text_16"></h3>
-                                <span data-i18n="text_17"></span>
+                        <div class="showcase-info">
+                            <h3 data-i18n="showcase_card1_title"></h3>
+                            <p data-i18n="showcase_card1_desc"></p>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Item 2 -->
+                    <div class="showcase-card card-tilt hidden stagger-2" data-tilt>
+                        <div class="showcase-media">
+                            <img src="./images/finance-7529921_1280.jpg" alt="Tax Strategy" class="showcase-img" />
+                            <div class="showcase-overlay">
+                                <span class="showcase-tag" data-i18n="showcase_card2_tag"></span>
                             </div>
                         </div>
-                        <!-- </div> -->
-                        <!-- <div class="row"> -->
-                        <div class="ab">
-                            <svg fill="#0056b3" height="16" viewbox="0 0 16 16" width="16"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path clip-rule="evenodd"
-                                    d="M2 2H2.77419V13.2258H14V14H2V2ZM9.35484 4.70968C9.35484 4.60701 9.39562 4.50855 9.46822 4.43596C9.54081 4.36336 9.63927 4.32258 9.74194 4.32258H12.8387C12.9414 4.32258 13.0398 4.36336 13.1124 4.43596C13.185 4.50855 13.2258 4.60701 13.2258 4.70968V7.80645C13.2258 7.90912 13.185 8.00758 13.1124 8.08017C13.0398 8.15276 12.9414 8.19355 12.8387 8.19355C12.736 8.19355 12.6376 8.15276 12.565 8.08017C12.4924 8.00758 12.4516 7.90912 12.4516 7.80645V5.79355L9.65445 9.21316C9.62021 9.25496 9.5776 9.28912 9.52935 9.31345C9.48111 9.33779 9.42831 9.35175 9.37435 9.35445C9.32038 9.35715 9.26645 9.34852 9.21603 9.32912C9.1656 9.30972 9.11979 9.27998 9.08155 9.24181L7.07871 7.23897L4.24826 11.1308C4.18634 11.2096 4.09631 11.2612 3.9971 11.275C3.89788 11.2887 3.7972 11.2635 3.71621 11.2045C3.63522 11.1456 3.58023 11.0576 3.5628 10.9589C3.54536 10.8603 3.56683 10.7587 3.62271 10.6756L6.71948 6.41755C6.75235 6.37227 6.79465 6.33465 6.84346 6.30729C6.89226 6.27993 6.94642 6.26348 7.0022 6.25906C7.05797 6.25465 7.11405 6.26238 7.16655 6.28172C7.21905 6.30106 7.26674 6.33155 7.30632 6.3711L9.32619 8.39174L12.0219 5.09677H9.74194C9.63927 5.09677 9.54081 5.05599 9.46822 4.9834C9.39562 4.9108 9.35484 4.81234 9.35484 4.70968Z"
-                                    fill-rule="evenodd"></path>
-                            </svg>
-                            <div>
-                                <h3 data-i18n="text_19"><br /></h3>
-                                <span data-i18n="text_20"></span>
+                        <div class="showcase-info">
+                            <h3 data-i18n="showcase_card2_title"></h3>
+                            <p data-i18n="showcase_card2_desc"></p>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Item 3 -->
+                    <div class="showcase-card card-tilt hidden stagger-3" data-tilt>
+                        <div class="showcase-media">
+                            <img src="./images/pexels-goumbik-590022.jpg" alt="Audit Ready" class="showcase-img" />
+                            <div class="showcase-overlay">
+                                <span class="showcase-tag" data-i18n="showcase_card3_tag"></span>
                             </div>
                         </div>
-                        <div class="ab">
-                            <svg class="bi bi-headset" fill="#0056b3" height="16" viewbox="0 0 16 16" width="16"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M8 1a5 5 0 0 0-5 5v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a6 6 0 1 1 12 0v6a2.5 2.5 0 0 1-2.5 2.5H9.366a1 1 0 0 1-.866.5h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 .866.5H11.5A1.5 1.5 0 0 0 13 12h-1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h1V6a5 5 0 0 0-5-5">
-                                </path>
-                            </svg>
-                            <div>
-                                <h3 data-i18n="text_21"></h3>
-                                <span data-i18n="text_22"></span>
-                            </div>
+                        <div class="showcase-info">
+                            <h3 data-i18n="showcase_card3_title"></h3>
+                            <p data-i18n="showcase_card3_desc"></p>
                         </div>
-                        <!-- </div> -->
                     </div>
                 </div>
             </div>
@@ -207,7 +325,7 @@
     <section id="numbers" class="numbers-section">
         <div class="numbers-container">
             <div class="numbers-grid">
-                <div class="num-card">
+                <div class="num-card hidden stagger-1">
                     <div class="num-icon"><i class="bi bi-briefcase-fill"></i></div>
                     <div class="num-metric">
                         <h2 class="counter" data-target="10" data-suffix="+">0</h2>
@@ -215,7 +333,7 @@
                     <h3 data-i18n="stat_exp_title"></h3>
                     <p data-i18n="stat_exp_sub"></p>
                 </div>
-                <div class="num-card">
+                <div class="num-card hidden stagger-2">
                     <div class="num-icon"><i class="bi bi-buildings-fill"></i></div>
                     <div class="num-metric">
                         <h2 class="counter" data-target="250" data-suffix="+">0</h2>
@@ -223,7 +341,7 @@
                     <h3 data-i18n="stat_clients_title"></h3>
                     <p data-i18n="stat_clients_sub"></p>
                 </div>
-                <div class="num-card">
+                <div class="num-card hidden stagger-3">
                     <div class="num-icon"><i class="bi bi-shield-fill-check"></i></div>
                     <div class="num-metric">
                         <h2 class="counter" data-target="100" data-suffix="%">0</h2>
@@ -231,7 +349,7 @@
                     <h3 data-i18n="stat_audit_title"></h3>
                     <p data-i18n="stat_audit_sub"></p>
                 </div>
-                <div class="num-card">
+                <div class="num-card hidden stagger-4">
                     <div class="num-icon"><i class="bi bi-graph-up-arrow"></i></div>
                     <div class="num-metric">
                         <h2 class="counter" data-target="500" data-prefix="֏ " data-suffix="M+">0</h2>
@@ -256,7 +374,7 @@
     </section>
     <section id="services">
         <div id="serv">
-            <h2 class="hh" data-i18n="text_27"></h2>
+            <h2 class="hh hidden" data-i18n="text_27"></h2>
                     <div id="ser">
             <div class="service" id="tax">
                 <div class="service-icon-box">
@@ -343,8 +461,116 @@
                     <i class="bi bi-arrow-right"></i>
                 </div>
             </div>
-        </div>     </div>
-            <!-- </div> -->
+            <div class="service" id="hr">
+                <div class="service-icon-box">
+                    <svg class="bi bi-people-fill" fill="currentColor" height="24" viewBox="0 0 16 16" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                    </svg>
+                </div>
+                <div class="service-content">
+                    <h2 data-i18n="text_hr_title">Աշխատավարձ & Կադրեր</h2>
+                    <p data-i18n="text_hr_desc">Աշխատավարձերի հաշվարկ, աշխատանքային պայմանագրերի կազմում և հարկային հաշվետվողականություն ՊԵԿ-ին:</p>
+                </div>
+                <div class="service-action">
+                    <span data-i18n="service_learn"></span>
+                    <i class="bi bi-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Apple-Style Interactive Tax Optimization Calculator Section -->
+    <section id="calculatorSection" class="calc-section">
+        <div class="calc-container">
+            <div class="calc-header">
+                <div class="section-tag"><i class="bi bi-calculator-fill"></i> <span data-i18n="calc_badge"></span></div>
+                <h2 class="hh" data-i18n="calc_title"></h2>
+                <p class="pp" data-i18n="calc_subtitle"></p>
+            </div>
+            
+            <div class="calc-glass-box card-tilt" data-tilt>
+                <div class="calc-controls">
+                    <div class="calc-slider-group">
+                        <div class="slider-header">
+                            <span class="slider-label" data-i18n="calc_rev_label"></span>
+                            <span id="calcRevDisplay" class="slider-val">֏ 25,000,000</span>
+                        </div>
+                        <input type="range" id="calcRevSlider" min="3000000" max="250000000" step="1000000" value="25000000" class="apple-range" />
+                        <div class="slider-ticks">
+                            <span>֏ 3M</span>
+                            <span>֏ 50M</span>
+                            <span>֏ 120M</span>
+                            <span>֏ 250M+</span>
+                        </div>
+                    </div>
+
+                    <div class="calc-industry-group">
+                        <span class="group-label" data-i18n="calc_industry_label"></span>
+                        <div class="industry-buttons" id="calcIndustryGroup">
+                            <button type="button" class="ind-btn active" data-ind="it">
+                                <i class="bi bi-laptop"></i> <span data-i18n="calc_ind_it"></span>
+                            </button>
+                            <button type="button" class="ind-btn" data-ind="trade">
+                                <i class="bi bi-shop"></i> <span data-i18n="calc_ind_trade"></span>
+                            </button>
+                            <button type="button" class="ind-btn" data-ind="services">
+                                <i class="bi bi-briefcase"></i> <span data-i18n="calc_ind_services"></span>
+                            </button>
+                            <button type="button" class="ind-btn" data-ind="prod">
+                                <i class="bi bi-gear-wide-connected"></i> <span data-i18n="calc_ind_prod"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-results-card">
+                    <div class="calc-result-metric primary">
+                        <span class="metric-caption" data-i18n="calc_stat_save_title"></span>
+                        <div class="metric-big-number">
+                            <span class="currency">֏</span>
+                            <span id="calcSavingsVal" class="number">3,800,000</span>
+                            <span class="period">/ տարի</span>
+                        </div>
+                        <div class="savings-glow-bar"><div class="glow-fill" id="calcGlowFill" style="width: 55%;"></div></div>
+                    </div>
+
+                    <!-- Apple Wallet 3D Titanium Tier Pass (Feature 4 - SKILL.md §4, §12) -->
+                    <div class="wallet-pass-wrapper" id="walletPassWrapper">
+                        <div class="wallet-pass-3d" id="walletPassCard" title="Click to flip / Շրջել քարտը">
+                            <div class="pass-face pass-front">
+                                <div class="pass-header-row">
+                                    <div class="pass-chip"><i class="bi bi-cpu-fill"></i></div>
+                                    <span class="pass-brand">HM CONSULTING · TITANIUM</span>
+                                    <span class="pass-status-pill"><i class="bi bi-patch-check-fill"></i> 0% ՌԻՍԿ</span>
+                                </div>
+                                <div class="pass-body">
+                                    <span class="pass-caption" data-i18n="calc_stat_tier_title">Առաջարկվող Փաթեթ</span>
+                                    <h3 id="calcTierVal" class="pass-tier-name">IT Venture Pro</h3>
+                                </div>
+                                <div class="pass-footer-row">
+                                    <span class="pass-serial">HM · 2026 · SRC · SHIELD</span>
+                                    <span class="pass-flip-hint"><i class="bi bi-arrow-repeat"></i> <span data-i18n="wallet_card_flip">Շրջել</span></span>
+                                </div>
+                                <div class="pass-shine"></div>
+                            </div>
+                            <div class="pass-face pass-back">
+                                <div class="pass-back-content">
+                                    <div class="back-seal"><i class="bi bi-shield-fill-check"></i></div>
+                                    <h4 data-i18n="wallet_card_back_title">HM Consulting Երաշխիք</h4>
+                                    <p data-i18n="wallet_card_back_desc">ՊԵԿ ստուգումների լիակատար պատասխանատվություն, 0% տուգանքի երաշխիք և NDA գաղտնիություն:</p>
+                                    <div class="back-badge"><i class="bi bi-lock-fill"></i> 100% ՊԵԿ ԵՐԱՇԽԻՔ</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="calcCtaBtn" class="calc-claim-btn">
+                        <span data-i18n="calc_btn"></span>
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -649,51 +875,186 @@
         </a>
     </div>
 
-    <!-- Consultation Modal -->
-    <div id="consultationModal" class="modal-backdrop" aria-hidden="true" role="dialog">
-        <div class="modal-card">
-            <button id="modalCloseBtn" class="modal-close" aria-label="Close modal">&times;</button>
-            <div class="modal-header">
-                <span class="form-badge"><i class="bi bi-shield-check"></i> <span data-i18n="form_guarantee"></span></span>
-                <h2 data-i18n="modal_title"></h2>
-                <p data-i18n="modal_subtitle"></p>
+    <!-- Consultation Modal (iOS Step Sheet & Drawer - Feature 6) -->
+    <div id="consultationModal" class="modal-backdrop sheet-backdrop" aria-hidden="true" role="dialog">
+        <div class="modal-card sheet-modal-card" id="sheetModalCard">
+            <!-- iOS Grab Handle -->
+            <div class="sheet-grab-bar" id="sheetGrabBar">
+                <div class="sheet-pill"></div>
             </div>
-            <form id="modalForm" class="consultation-form">
-                <div class="form-row">
-                    <div class="form-field">
-                        <label data-i18n="form_name"></label>
-                        <input type="text" name="name" required placeholder="Ձեր Անունը / Ընկերությունը" data-i18n-ph="form_name" />
-                    </div>
-                    <div class="form-field">
-                        <label data-i18n="form_phone"></label>
-                        <input type="tel" name="phone" required placeholder="+374 (__) __-__-__" data-i18n-ph="form_phone" />
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-field">
-                        <label data-i18n="form_email"></label>
-                        <input type="email" name="email" placeholder="example@mail.com" data-i18n-ph="form_email" />
-                    </div>
-                    <div class="form-field">
-                        <label data-i18n="form_service"></label>
-                        <select name="service" required>
-                            <option value="" disabled selected data-i18n="form_service"></option>
-                            <option value="tax" data-i18n="form_service_tax"></option>
-                            <option value="accounting" data-i18n="form_service_acc"></option>
-                            <option value="audit" data-i18n="form_service_audit"></option>
-                            <option value="financial_planning" data-i18n="form_service_fin"></option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-field">
-                    <label data-i18n="form_message"></label>
-                    <textarea name="message" rows="3" placeholder="Կարճ նկարագրեք Ձեր հարցը..." data-i18n-ph="form_message"></textarea>
-                </div>
-                <button type="submit" class="form-submit-btn">
-                    <span class="btn-text" data-i18n="form_submit"></span>
-                    <i class="bi bi-arrow-right"></i>
+
+            <!-- Top Header & Segmented Progress Bar -->
+            <div class="sheet-header">
+                <button type="button" id="wizardBackBtn" class="wizard-nav-btn back-btn" style="visibility: hidden;" aria-label="Go back">
+                    <i class="bi bi-chevron-left"></i>
                 </button>
+                <div class="wizard-progress-bar">
+                    <div class="wizard-progress-fill" id="wizardProgressFill" style="width: 25%;"></div>
+                </div>
+                <button id="modalCloseBtn" class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+
+            <div class="wizard-meta-row">
+                <span class="step-indicator-badge" id="stepIndicatorBadge">Քայլ 1 / 4</span>
+                <span class="form-badge"><i class="bi bi-shield-check"></i> <span data-i18n="form_guarantee"></span></span>
+            </div>
+
+            <form id="modalForm" class="consultation-form wizard-form">
+                <!-- Hidden inputs to synchronize wizard data -->
+                <input type="hidden" name="business_type" id="wizardBizType" value="it" />
+                <input type="hidden" name="turnover_tier" id="wizardTurnover" value="turnover" />
+                <input type="hidden" name="primary_goal" id="wizardGoal" value="tax_opt" />
+                <input type="hidden" name="service" id="wizardService" value="tax" />
+                <input type="hidden" name="message" id="wizardMessage" value="" />
+
+                <!-- STEP 1: Business Industry -->
+                <div class="wizard-step active" data-step="1">
+                    <h2 class="wizard-step-title" data-i18n="wizard_step1_title">Ի՞նչ ոլորտում է Ձեր բիզնեսը</h2>
+                    <p class="wizard-step-subtitle" data-i18n="wizard_step1_subtitle">Ընտրեք Ձեր հիմնական գործունեության ուղղությունը</p>
+                    <div class="wizard-grid">
+                        <button type="button" class="wizard-option-card active" data-biz="it" data-service="tax">
+                            <div class="opt-icon"><i class="bi bi-laptop"></i></div>
+                            <div class="opt-info">
+                                <h4 data-i18n="biz_it_title">ՏՏ և Ստարտափներ</h4>
+                                <p data-i18n="biz_it_desc">0% շահութահարկ, 10% եկամտային հարկ</p>
+                            </div>
+                        </button>
+                        <button type="button" class="wizard-option-card" data-biz="trade" data-service="accounting">
+                            <div class="opt-icon"><i class="bi bi-shop"></i></div>
+                            <div class="opt-info">
+                                <h4 data-i18n="biz_trade_title">Առևտուր և E-Commerce</h4>
+                                <p data-i18n="biz_trade_desc">Մեծածախ, մանրածախ, Wildberries / Ozon</p>
+                            </div>
+                        </button>
+                        <button type="button" class="wizard-option-card" data-biz="services" data-service="tax">
+                            <div class="opt-icon"><i class="bi bi-briefcase"></i></div>
+                            <div class="opt-info">
+                                <h4 data-i18n="biz_services_title">Ծառայություններ</h4>
+                                <p data-i18n="biz_services_desc">Խորհրդատվություն, մարքեթինգ, լոգիստիկա</p>
+                            </div>
+                        </button>
+                        <button type="button" class="wizard-option-card" data-biz="mfg" data-service="audit">
+                            <div class="opt-icon"><i class="bi bi-building-gear"></i></div>
+                            <div class="opt-info">
+                                <h4 data-i18n="biz_mfg_title">Արտադրություն և HoReCa</h4>
+                                <p data-i18n="biz_mfg_desc">Սննդի սպասարկում, գործարաններ, արտահանում</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Turnover Tier -->
+                <div class="wizard-step" data-step="2">
+                    <h2 class="wizard-step-title" data-i18n="wizard_step2_title">Տարեկան կանխատեսվող շրջանառություն</h2>
+                    <p class="wizard-step-subtitle" data-i18n="wizard_step2_subtitle">Օգնում է ընտրել առավել շահավետ հարկային ռեժիմը</p>
+                    <div class="wizard-tier-list">
+                        <button type="button" class="wizard-tier-pill" data-tier="micro">
+                            <div class="tier-lead">
+                                <strong data-i18n="tier_micro_title">Մինչև 24 մլն ֏</strong>
+                                <span class="badge-sub" data-i18n="tier_micro_badge">Միկրոձեռնարկատիրություն (0%)</span>
+                            </div>
+                            <i class="bi bi-check-circle-fill check-indicator"></i>
+                        </button>
+                        <button type="button" class="wizard-tier-pill active" data-tier="turnover">
+                            <div class="tier-lead">
+                                <strong data-i18n="tier_turnover_title">24 մլն — 115 մլն ֏</strong>
+                                <span class="badge-sub" data-i18n="tier_turnover_badge">Շրջանառության հարկ (1.5% - 5%)</span>
+                            </div>
+                            <i class="bi bi-check-circle-fill check-indicator"></i>
+                        </button>
+                        <button type="button" class="wizard-tier-pill" data-tier="vat">
+                            <div class="tier-lead">
+                                <strong data-i18n="tier_vat_title">115 մլն — 500 մլն ֏</strong>
+                                <span class="badge-sub" data-i18n="tier_vat_badge">Ընդհանուր համակարգ (ԱԱՀ 20% + Շահութահարկ 18%)</span>
+                            </div>
+                            <i class="bi bi-check-circle-fill check-indicator"></i>
+                        </button>
+                        <button type="button" class="wizard-tier-pill" data-tier="enterprise">
+                            <div class="tier-lead">
+                                <strong data-i18n="tier_ent_title">500+ մլն ֏</strong>
+                                <span class="badge-sub" data-i18n="tier_ent_badge">Խոշոր բիզնես և աուդիտ</span>
+                            </div>
+                            <i class="bi bi-check-circle-fill check-indicator"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Primary Goal -->
+                <div class="wizard-step" data-step="3">
+                    <h2 class="wizard-step-title" data-i18n="wizard_step3_title">Ի՞նչն է առաջնահերթ Ձեզ համար</h2>
+                    <p class="wizard-step-subtitle" data-i18n="wizard_step3_subtitle">Ընտրեք Ձեր բիզնեսի առանցքային կարիքը</p>
+                    <div class="wizard-grid">
+                        <button type="button" class="wizard-option-card active" data-goal="tax_opt" data-service="tax">
+                            <div class="opt-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                            <div class="opt-info">
+                                <h4 data-i18n="goal_tax_title">Հարկերի օպտիմալացում</h4>
+                                <p data-i18n="goal_tax_desc">Օրինական ճանապարհով հարկային բեռի նվազեցում</p>
+                            </div>
+                        </button>
+                        <button type="button" class="wizard-option-card" data-goal="full_acc" data-service="accounting">
+                            <div class="opt-icon"><i class="bi bi-journal-check"></i></div>
+                            <div class="opt-info">
+                                <h4 data-i18n="goal_acc_title">Ամբողջական հաշվապահություն</h4>
+                                <p data-i18n="goal_acc_desc">Հաշվետվություններ, աշխատավարձ, 1C հաշվառում</p>
+                            </div>
+                        </button>
+                        <button type="button" class="wizard-option-card" data-goal="audit_shield" data-service="audit">
+                            <div class="opt-icon"><i class="bi bi-shield-check"></i></div>
+                            <div class="opt-info">
+                                <h4 data-i18n="goal_audit_title">ՊԵԿ ստուգումների պաշտպանություն</h4>
+                                <p data-i18n="goal_audit_desc">Ռիսկերի վերլուծություն և տուգանքներից զերծ մնալ</p>
+                            </div>
+                        </button>
+                        <button type="button" class="wizard-option-card" data-goal="registration" data-service="financial_planning">
+                            <div class="opt-icon"><i class="bi bi-building"></i></div>
+                            <div class="opt-info">
+                                <h4 data-i18n="goal_reg_title">Ընկերության հիմնադրում</h4>
+                                <p data-i18n="goal_reg_desc">ԱՁ, ՍՊԸ բացում և բանկային հաշիվների աջակցություն</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Contact & Instant Confirmation -->
+                <div class="wizard-step" data-step="4">
+                    <h2 class="wizard-step-title" data-i18n="wizard_step4_title">Ո՞ւր ուղարկենք հաշվարկը</h2>
+                    <p class="wizard-step-subtitle" data-i18n="wizard_step4_subtitle">Մեր ավագ մասնագետը կկապվի 15 րոպեի ընթացքում</p>
+
+                    <div class="wizard-summary-pill" id="wizardSummaryPill">
+                        <span id="sumBiz">ՏՏ</span> • <span id="sumTier">24-115 մլն ֏</span> • <span id="sumGoal">Հարկերի օպտիմալացում</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label data-i18n="form_name"></label>
+                            <input type="text" name="name" required placeholder="Ձեր Անունը / Ընկերությունը" data-i18n-ph="form_name" id="wizardNameInput" />
+                        </div>
+                        <div class="form-field">
+                            <label data-i18n="form_phone"></label>
+                            <input type="tel" name="phone" required placeholder="+374 (__) __-__-__" data-i18n-ph="form_phone" id="wizardPhoneInput" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label data-i18n="form_email"></label>
+                            <input type="email" name="email" placeholder="example@mail.com" data-i18n-ph="form_email" id="wizardEmailInput" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="form-submit-btn wizard-submit-btn">
+                        <span class="btn-text" data-i18n="form_submit"></span>
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+
+                    <div class="instant-handshake-wrapper">
+                        <a href="https://wa.me/37455238228" target="_blank" rel="noopener noreferrer" class="instant-wa-btn" id="instantWaBtn">
+                            <i class="bi bi-whatsapp"></i>
+                            <span data-i18n="btn_instant_wa">Անմիջապես կապվել WhatsApp-ով</span>
+                        </a>
+                    </div>
+                </div>
             </form>
+
             <div id="modalSuccess" class="form-success-message" style="display: none;">
                 <i class="bi bi-check-circle-fill"></i>
                 <h3 data-i18n="form_success_title"></h3>
@@ -702,5 +1063,4 @@
         </div>
     </div>
 </body>
-
 </html>

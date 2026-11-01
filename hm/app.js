@@ -2,28 +2,24 @@ if (!localStorage.getItem("lang")) {
   localStorage.setItem("lang", "hy");
 }
 
-document.querySelectorAll('body *:not(svg):not(path):not(g):not(circle):not(rect):not(.rev):not(.rev *):not(#c > p):not(#header):not(#header *):not(#mVisual):not(#mVisual *):not(.floating-dock):not(.floating-dock *):not(.modal-backdrop):not(.modal-backdrop *):not(.numbers-section):not(.numbers-section *):not(.reviews-section):not(.reviews-section *)').forEach(el => {
-  el.classList.add('hidden');
-});
-
-let rev = document.querySelectorAll(".rev").forEach(el => {
-  console.log(el.children);
-})
-
+/* ===================================================
+   Counters Animation with Smooth Cubic-Ease
+=================================================== */
 const counters = document.querySelectorAll('.counter');
 
 function animateCounter(element) {
   const targetNumber = +element.getAttribute('data-target') || 0;
   const prefix = element.getAttribute('data-prefix') || '';
   const suffix = element.getAttribute('data-suffix') || '';
-  const duration = 1200;
+  const duration = 1400;
   let startTime = null;
 
   function step(timestamp) {
     if (!startTime) startTime = timestamp;
     const progress = timestamp - startTime;
     const progressRatio = Math.min(progress / duration, 1);
-    const easeProgress = 1 - Math.pow(1 - progressRatio, 3);
+    // Apple-style smooth cubic deceleration
+    const easeProgress = 1 - Math.pow(1 - progressRatio, 3.5);
     const value = Math.floor(easeProgress * targetNumber);
 
     element.textContent = prefix + value + suffix;
@@ -42,168 +38,341 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('show');
-
       if (entry.target.classList.contains('counter')) {
         animateCounter(entry.target);
         observer.unobserve(entry.target);
+      } else {
+        // Unobserve after animation to save perf
+        setTimeout(() => observer.unobserve(entry.target), 800);
       }
     }
   });
+}, {
+  threshold: 0.1,
+  rootMargin: '0px 0px -40px 0px'
 });
 
-const hiddenElements = document.querySelectorAll('.hidden');
-hiddenElements.forEach(el => observer.observe(el));
 counters.forEach(counter => observer.observe(counter));
 
+// Observe ALL scroll-reveal elements
+document.querySelectorAll('.hidden, .hidden-left, .hidden-right, .hidden-scale').forEach(el => {
+  observer.observe(el);
+});
 
+/* ===================================================
+   Apple Scroll Progress Bar & Dynamic Header
+=================================================== */
+const scrollProgressBar = document.getElementById("scrollProgressBar");
+const headerEl = document.getElementById("header");
+const parallaxImages = document.querySelectorAll(".scroll-pic-img");
 
+function updateParallaxPics(scrollPos) {
+  const winHeight = window.innerHeight;
+  parallaxImages.forEach(img => {
+    const rect = img.getBoundingClientRect();
+    if (rect.top < winHeight && rect.bottom > 0) {
+      const speed = +img.getAttribute("data-parallax-speed") || 0.12;
+      const offset = (rect.top - winHeight / 2) * speed;
+      img.style.transform = `translateY(${offset}px) scale(1.05)`;
+    }
+  });
+}
 
+const navLinks = document.querySelectorAll("#header > ul > li > a");
+const navSections = ["main", "aboutUs", "services", "calculatorSection", "reviews", "contactUs"];
 
-// let revs = document.getElementById("revs")
-// let back = document.getElementById("back")
-// let front = document.getElementById("front")
-// let x = 5
-// let y = 110
+function updateActiveNav() {
+  const scrollPos = window.scrollY + 120;
+  let currentSec = "main";
+  navSections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollPos) {
+      currentSec = id;
+    }
+  });
 
-// front.addEventListener("click", () => {
-//   if (revs.style.transform == `translateX(5%)`) {
-//     x = y
-//     x = -x
-//     console.log(x);
+  navLinks.forEach(link => {
+    const href = link.getAttribute("href");
+    if (href === `#${currentSec}`) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+}
 
-//     revs.style.transform = `translateX(${x}%)`
-//   }
-//   else if (revs.style.transform == `translateX(-110%)`) {
-//     x -= y
-//     x -= 5
-//     // x = -x
-//     console.log(x);
+function handleScroll() {
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrollPos = window.scrollY;
 
-//     revs.style.transform = `translateX(${x}%)`
-//   }
-//   else {
-//     x = 5
-//     console.log(x);
-
-//     revs.style.transform = `translateX(${x}%)`
-//   }
-// })
-
-// back.addEventListener("click", () => {
-//   if (revs.style.transform == `translateX(-225%)`) {
-//     x += y
-//     x += 5
-//     x = Math.round(x)
-//     console.log(x);
-
-//     revs.style.transform = `translateX(${x}%)`
-//   }
-//   else if (revs.style.transform == `translateX(-110%)`) {
-//     x += y
-//     x += 5
-//     console.log(x);
-
-//     revs.style.transform = `translateX(${x}%)`
-//   }
-//   else {
-//     x = -225
-//     console.log(x);
-
-//     revs.style.transform = `translateX(${x}%)`
-//   }
-// })
-
-
-// let current = 0;
-// const revs = document.getElementById("revs");
-// function nextSlide() {
-//   current = (current + 1) % 3;
-//   revs.style.transform = `translateX(-${100 * current}%)`;
-// }
-// setInterval(nextSlide, 3000);
-
-
-let start = document.getElementById("start")
-
-start.addEventListener("click", () => {
-  location.href = "#aboutUs"
-})
-
-let task = document.getElementById("task")
-
-task.addEventListener("click", () => {
-  location.href = "#services"
-})
-
-let all = document.querySelectorAll("body > *").forEach(el => {
-  el.style.overflowX = "hidden"
-})
-
-let logo = document.getElementById("logo")
-
-let colorMode = document.getElementById("colorMode")
-
-colorMode.addEventListener("click", (event) => {
-  // event.preventDefault()
-  if (getComputedStyle(document.documentElement).getPropertyValue("--main-color") == "#0C4D7D") {
-    console.log(colorMode);
-    colorMode.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-moon-fill" viewBox="0 0 16 16">
-      <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
-    </svg>
-    `
-    document.documentElement.style.setProperty('--main-color', '#0C90F1');
-    document.documentElement.style.setProperty('--und-color', '#FA8D3F');
-    document.documentElement.style.setProperty('--main-text', '#d6d6d6');
-    document.documentElement.style.setProperty('--main-bgc', '#121212');
-    document.documentElement.style.setProperty('--secondary-bgc', '#1e1e1e');
-    document.documentElement.style.setProperty('--hover-color', '#0E5E99');
-    document.documentElement.style.setProperty('--big-text', '#fff');
-    document.documentElement.style.setProperty('--hd-bgc', 'rgba(30, 30, 30, 0.9)');
-    document.documentElement.style.setProperty('--pp-color', '#c8c8c8');
-    document.documentElement.style.setProperty('--all-color', '#ccc');
-    document.documentElement.style.backgroundColor = "#1e1e1e"
-    logo.firstElementChild.innerHTML = `<svg viewBox="0 0 1200 184" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24.947 60.2623C31.7586 52.8867 38.5269 45.5544 45.3819 38.092C42.5184 34.274 41.0433 30.1089 41.8242 25.3364C42.3883 21.7787 43.9936 18.7851 46.6401 16.3554C51.6729 11.6697 59.2221 10.8454 65.1227 14.3597C71.8042 18.3078 74.0169 25.0761 71.5872 34.1872C76.4031 37.0073 81.219 39.8274 86.2518 42.7343C89.1587 39.22 92.7597 36.9639 97.3153 36.5301C101.871 36.0962 105.862 37.5279 109.42 40.5216C115.538 35.1851 121.568 29.892 127.556 24.6856C123.304 14.4464 124.996 6.85384 132.415 2.29828C139.01 -1.73665 147.383 -0.348282 152.416 5.59564C157.319 11.3226 157.275 19.9999 152.329 25.7269C146.646 32.2782 138.749 32.8422 129.812 27.2454C123.824 32.4951 117.794 37.7449 111.806 42.9946C115.754 52.5396 114.843 58.874 108.856 63.9936C103.78 68.3322 96.4042 68.8962 90.6772 65.3819C84.2126 61.4338 82.1735 55.056 84.4296 45.6846C79.874 43.038 75.2751 40.3047 70.6327 37.7015C70.2856 37.4846 69.5047 37.5713 69.201 37.875C60.9142 44.5999 56.9661 45.1205 47.8549 40.5216C41.0867 47.8539 34.275 55.2295 27.42 62.692C30.5004 66.7703 31.9322 71.2391 30.8041 76.3153C29.9798 80.0899 27.984 83.1269 24.947 85.4264C18.8295 90.1121 10.1956 89.5047 4.72897 84.1248C-0.867857 78.6581 -1.56204 70.0242 3.08029 63.7332C8.02633 56.9216 16.0094 55.62 24.947 60.2623ZM149.075 15.6613C149.119 11.0189 145.301 7.11416 140.615 7.02739C135.972 6.984 132.024 10.802 131.938 15.4443C131.851 20.1734 135.799 24.2083 140.528 24.2083C145.17 24.2083 149.032 20.347 149.075 15.6613ZM65.7735 27.766C65.7735 23.1237 61.9121 19.2189 57.2264 19.2189C52.584 19.2189 48.6793 23.0369 48.6359 27.7226C48.5925 32.4517 52.584 36.4433 57.2698 36.3999C61.9555 36.3131 65.7735 32.4084 65.7735 27.766ZM90.3301 51.8888C90.2433 56.5311 94.0179 60.5227 98.6603 60.6528C103.346 60.783 107.381 56.8782 107.468 52.1057C107.511 47.4634 103.693 43.5586 99.0074 43.4719C94.3216 43.4285 90.3735 47.2465 90.3301 51.8888ZM24.1226 72.8877C24.1226 68.2454 20.2613 64.3407 15.5755 64.3407C10.9332 64.2973 7.02844 68.1586 6.98506 72.801C6.94167 77.5301 10.9332 81.5216 15.6189 81.4782C20.3046 81.4348 24.1226 77.5301 24.1226 72.8877Z" fill="#0C90F1"/>
-    <path d="M156.104 118.053C156.104 137.273 156.104 156.537 156.104 175.757C156.104 181.397 153.501 183.957 147.904 183.957C142.784 183.957 137.621 183.957 132.502 183.957C127.729 183.957 124.952 181.137 124.952 176.407C124.952 137.49 124.952 98.6158 124.952 59.6983C124.952 54.9258 127.773 52.1491 132.502 52.1491C137.838 52.1057 143.218 52.1057 148.555 52.1491C153.327 52.1491 156.104 54.9692 156.104 59.6983C156.147 79.1354 156.104 98.6158 156.104 118.053ZM132.068 59.2645C132.068 62.3449 132.068 65.165 132.068 67.9417C132.024 83.1269 131.981 98.3121 131.981 113.454C131.981 133.889 132.024 154.367 131.981 174.802C131.981 176.407 132.415 176.928 134.064 176.885C138.402 176.798 142.741 176.755 147.079 176.885C148.772 176.928 149.119 176.321 149.119 174.759C149.075 140.006 149.119 105.211 149.119 70.4581C149.119 66.7269 149.119 62.9957 149.119 59.1777C143.305 59.2645 137.751 59.2645 132.068 59.2645Z" fill="#0C90F1"/>
-    <path d="M41.6508 128.249C41.6508 112.543 41.6508 96.8804 41.6508 81.1745C41.6508 75.5343 44.254 72.9745 49.8508 72.9745C54.9704 72.9745 60.1334 72.9745 65.2529 72.9745C70.0254 73.0179 72.8022 75.7946 72.8022 80.5237C72.8022 112.499 72.8022 144.432 72.8022 176.407C72.8022 181.18 69.9821 183.957 65.2529 183.957C59.9164 183.957 54.5365 183.957 49.2 183.957C44.4275 183.957 41.6508 181.136 41.6508 176.407C41.6074 160.354 41.6508 144.302 41.6508 128.249ZM48.636 80.0899C48.636 84.3851 48.636 88.5068 48.636 92.6285C48.636 109.462 48.636 126.296 48.636 143.13C48.636 153.673 48.7228 164.216 48.636 174.802C48.636 176.581 49.2 177.015 50.8921 176.971C55.0138 176.885 59.1355 176.841 63.2572 176.971C65.2096 177.058 65.817 176.494 65.817 174.455C65.7736 146.775 65.817 119.094 65.817 91.4137C65.817 87.6825 65.817 83.9512 65.817 80.0899C60.0466 80.0899 54.4931 80.0899 48.636 80.0899Z" fill="#0C90F1"/>
-    <path d="M114.453 139.095C114.453 151.374 114.453 163.695 114.453 175.974C114.453 181.31 111.806 183.957 106.47 184C101.264 184 96.0572 184 90.8508 184C86.0784 184 83.3016 181.18 83.3016 176.451C83.3016 151.417 83.3016 126.426 83.3016 101.393C83.3016 96.6201 86.1217 93.8433 90.8508 93.8433C96.1874 93.7999 101.567 93.7999 106.904 93.8433C111.676 93.8433 114.453 96.6634 114.453 101.393C114.496 113.931 114.453 126.513 114.453 139.095ZM90.417 100.915C90.417 104.299 90.417 107.38 90.417 110.504C90.417 132.023 90.417 153.586 90.3302 175.106C90.3302 176.538 90.8075 176.971 92.1958 176.928C96.4477 176.841 100.743 176.798 104.995 176.928C106.86 176.971 107.468 176.538 107.468 174.542C107.424 153.803 107.468 133.065 107.468 112.326C107.468 108.508 107.468 104.733 107.468 100.872C101.611 100.915 96.1006 100.915 90.417 100.915Z" fill="#0C90F1"/>
-    <path d="M31.1513 149.291C31.1513 158.272 31.1513 167.209 31.1513 176.19C31.1513 181.223 28.418 183.957 23.3852 183.957C18.0921 183.957 12.8423 183.957 7.54921 183.957C2.77672 183.957 0 181.136 0 176.407C0 158.315 0 140.267 0 122.175C0 117.402 2.82011 114.625 7.54921 114.625C12.8857 114.582 18.2656 114.582 23.6021 114.625C28.3746 114.625 31.1513 117.445 31.1513 122.175C31.1947 131.199 31.1513 140.267 31.1513 149.291ZM7.11535 121.741C7.11535 124.995 7.11535 127.988 7.11535 131.025C7.11535 145.69 7.11535 160.354 7.02858 175.019C7.02858 176.581 7.5926 176.971 9.06773 176.928C13.3196 176.841 17.6148 176.841 21.8667 176.928C23.6455 176.971 24.2095 176.451 24.2095 174.629C24.1662 160.745 24.2095 146.905 24.2095 133.021C24.2095 129.29 24.2095 125.559 24.2095 121.697C18.3524 121.741 12.8423 121.741 7.11535 121.741Z" fill="#0C90F1"/>
-    <path d="M193.246 179.343H190V76H193.246V179.343ZM198.26 179.343H195.014V76H198.26V179.343ZM203.26 179.343H200.014V76H203.26V179.343ZM208.26 179.343H205.014V76H208.26V179.343ZM253.798 121.462V76.0008H257.044V179.358H253.798V144.385H213.271V179.345H210.026V76.0019H213.271V121.463L253.798 121.462ZM253.798 124.659H213.271V126.401H253.798V124.659ZM213.273 131.324H253.799V129.583H213.273V131.324ZM253.798 134.522H213.271V136.263H253.798V134.522ZM213.273 141.187H253.799V139.446H213.273V141.187ZM262.044 179.343H258.798V76H262.044V179.343ZM267.059 179.343H263.813V76H267.059V179.343ZM272.059 179.343H268.813V76H272.059V179.343ZM277.073 179.343H273.827V76H277.073V179.343ZM345.275 76.0008H348.576L329.819 179.343H326.518L345.275 76.0008ZM340.481 76.0008H343.768L324.998 179.343H321.711L340.481 76.0008ZM335.662 76.0008H338.963L320.206 179.343H316.905L335.662 76.0008ZM330.868 76.0008H334.155L315.398 179.343H312.097L330.868 76.0008ZM420.235 76.0008L420.235 76.0282H423.729L442.486 179.371H439.185L427.5 115.042L399.696 179.371H396.173L426.464 109.301L425.981 106.662L394.544 179.371H391.022L424.931 100.922L424.448 98.2824L389.392 179.371H385.87L423.397 92.5453L422.927 89.92L384.251 179.374H380.729L421.875 84.168L421.392 81.5289L379.097 179.364H372.84L346.072 116.355L334.635 179.364H331.334L350.091 76.021H353.392L353.379 76.089L386.225 154.687L420.235 76.0008ZM375.952 178.432L376.656 176.786L347.595 107.873L347.111 110.539L375.952 178.432ZM378.436 172.678L379.251 170.801L349.126 99.3856L348.642 102.052L378.436 172.678ZM381.034 166.678L381.849 164.801L350.674 90.8948L350.19 93.561L381.034 166.678ZM383.631 160.679L384.432 158.816L352.305 81.9333L351.739 85.0755L383.631 160.679ZM425.179 76.0008H428.48L447.237 179.343H443.949L425.179 76.0008ZM429.987 76.0008H433.288L452.045 179.343H448.744L429.987 76.0008ZM434.791 76.0008H438.079L456.849 179.343H453.548L434.791 76.0008ZM442.884 76.0008L461.654 179.343H458.353L439.596 76.0008H442.884Z" fill="#FA8D3F"/>
-    <path d="M514.907 142.138C514.907 129.649 525.231 119.482 537.911 119.482H542.349V121.672H537.911C526.451 121.672 517.131 130.852 517.131 142.137C517.131 153.423 526.452 162.603 537.911 162.603H542.349V164.793H537.911C525.23 164.793 514.907 154.625 514.907 142.138ZM511.68 142.138C511.68 127.897 523.452 116.303 537.91 116.303H542.348V118.493H537.91C524.672 118.493 513.902 129.098 513.902 142.137C513.902 155.176 524.671 165.781 537.91 165.781H542.348V167.971H537.91C523.441 167.971 511.68 156.377 511.68 142.138ZM508.454 142.138C508.454 126.145 521.673 113.127 537.911 113.127H542.349V115.317H537.911C522.893 115.317 510.676 127.349 510.676 142.139C510.676 156.93 522.892 168.962 537.911 168.962H542.349V171.152H537.911C521.663 171.152 508.454 158.131 508.454 142.138ZM505.227 142.138C505.227 124.384 519.894 109.949 537.911 109.949H542.349V112.139H537.911C521.115 112.139 507.449 125.596 507.449 142.139C507.449 158.683 521.113 172.14 537.911 172.14H542.349V174.33H537.911C519.894 174.33 505.227 159.895 505.227 142.141V142.138ZM537.911 106.77L542.35 106.77V108.961H537.911C519.336 108.961 504.224 123.844 504.224 142.137C504.224 160.43 519.337 175.314 537.911 175.314H542.35V177.504H537.911C518.115 177.504 502 161.633 502 142.136C502 122.64 518.106 106.77 537.911 106.77ZM602.094 105C622.903 105 639.831 121.663 639.831 142.165C639.831 162.659 622.902 179.331 602.094 179.331C581.286 179.331 564.357 162.658 564.357 142.165C564.357 121.672 581.286 105 602.094 105ZM602.094 177.131C621.673 177.131 637.607 161.438 637.607 142.157C637.607 122.876 621.672 107.182 602.094 107.182C582.517 107.182 566.581 122.867 566.581 142.157C566.581 161.447 582.517 177.131 602.094 177.131ZM602.094 108.28C621.067 108.28 636.501 123.48 636.491 142.155C636.491 160.831 621.056 176.031 602.094 176.031C583.132 176.031 567.697 160.84 567.697 142.155C567.697 123.479 583.121 108.28 602.094 108.28ZM602.094 173.851C619.837 173.851 634.277 159.629 634.269 142.164C634.269 124.68 619.839 110.469 602.094 110.469C584.349 110.469 569.911 124.69 569.911 142.164C569.911 159.637 584.352 173.851 602.094 173.851ZM602.094 111.559C619.231 111.559 633.161 125.287 633.161 142.155C633.161 159.024 619.222 172.751 602.094 172.751C584.966 172.751 571.027 159.024 571.027 142.155C571.027 125.287 584.966 111.559 602.094 111.559ZM602.094 170.561C618.001 170.561 630.936 157.821 630.936 142.156C630.936 126.491 618 113.751 602.094 113.751C586.188 113.751 573.252 126.491 573.252 142.156C573.252 157.821 586.188 170.561 602.094 170.561ZM602.094 114.842C617.386 114.842 629.831 127.097 629.831 142.158C629.831 157.218 617.386 169.474 602.094 169.474C586.802 169.474 574.358 157.218 574.358 142.158C574.358 127.097 586.802 114.842 602.094 114.842ZM602.094 167.281C616.165 167.281 627.606 156.014 627.606 142.156C627.606 128.298 616.165 117.031 602.094 117.031C588.023 117.031 576.582 128.298 576.582 142.156C576.582 156.014 588.023 167.281 602.094 167.281ZM602.094 118.129C615.55 118.129 626.499 128.902 626.49 142.155C626.49 155.398 615.55 166.181 602.094 166.181C588.638 166.181 577.689 155.407 577.689 142.155C577.689 128.911 588.638 118.129 602.094 118.129ZM602.094 164.001C614.329 164.001 624.275 154.206 624.275 142.156C624.275 130.106 614.32 120.311 602.094 120.311C589.868 120.311 579.913 130.106 579.913 142.156C579.913 154.206 589.868 164.001 602.094 164.001ZM664.013 177.504H661.79V106.808H664.013V177.504ZM667.448 177.504H665.225V106.808H667.448V177.504ZM670.874 177.504H668.65V106.808H670.874V177.504ZM674.309 177.504H672.085V106.808H674.309V177.504ZM720.441 106.806L722.665 106.806V177.502H719.921L677.735 110.607V112.545L677.754 112.536L718.718 177.501H716.106L677.734 116.654V118.555L714.903 177.501H712.291L677.732 122.701V124.602L711.09 177.5H708.469L677.734 128.751V130.652L707.276 177.502H704.655L677.734 134.8V177.502H675.51V131.277L675.491 131.24L675.51 131.231V106.805H677.951L706.719 152.424V106.805H708.943V155.946L710.154 157.857V106.805H712.368V161.39L713.579 163.3V106.806H715.803V166.823L717.005 168.743V106.806H719.229V172.266L720.44 174.176L720.441 106.806ZM768.958 133.61C781.175 133.704 791.091 143.508 791.091 155.558C791.091 167.654 781.099 177.505 768.807 177.505C759.637 177.505 751.527 172.09 748.121 163.693L749.9 162.882L750.137 162.789C753.174 170.394 760.508 175.314 768.798 175.314C779.859 175.314 788.859 166.451 788.859 155.557C788.859 144.663 779.86 135.8 768.798 135.8V135.772C764.029 135.688 760.168 131.849 760.168 127.124C760.168 122.352 764.114 118.466 768.959 118.466C772.545 118.466 775.63 120.563 776.993 123.601L774.977 124.523C773.965 122.24 771.656 120.656 768.959 120.656C765.344 120.656 762.391 123.563 762.391 127.133C762.391 130.702 765.333 133.61 768.958 133.61ZM759.013 127.132C759.013 132.537 763.479 136.927 768.958 136.936C779.32 137.02 787.714 145.342 787.714 155.557C787.714 165.827 779.226 174.186 768.798 174.186C761 174.186 753.998 169.424 751.178 162.294L753.193 161.372C755.654 167.737 761.871 171.996 768.797 171.996C778.005 171.996 785.49 164.624 785.49 155.557C785.49 146.489 778.004 139.117 768.797 139.117V139.108C762.164 139.024 756.789 133.684 756.789 127.132C756.789 120.525 762.249 115.147 768.959 115.147C773.794 115.147 778.1 117.999 780.04 122.211L778.024 123.134C776.454 119.685 772.915 117.337 768.959 117.337C763.471 117.337 759.013 121.727 759.013 127.132ZM783.096 120.823L781.08 121.755C778.951 117.133 774.201 114.03 768.958 114.03C761.615 114.03 755.644 119.91 755.644 127.142C755.644 134.374 761.615 140.255 768.958 140.255C777.446 140.339 784.335 147.161 784.335 155.548C784.335 163.983 777.37 170.851 768.797 170.851C762.324 170.851 756.494 166.797 754.252 160.879L756.277 159.957C758.151 165.111 763.195 168.661 768.796 168.661C776.14 168.661 782.111 162.781 782.111 155.549C782.111 148.317 776.14 142.436 768.796 142.436V142.427C760.308 142.343 753.42 135.521 753.42 127.133C753.42 118.699 760.384 111.83 768.958 111.83C775.071 111.83 780.608 115.446 783.096 120.823ZM786.172 119.425L784.146 120.339C781.459 114.514 775.516 110.693 768.949 110.693C759.741 110.693 752.256 118.065 752.256 127.132C752.256 136.2 759.742 143.572 768.949 143.572V143.581C775.582 143.665 780.957 149.005 780.957 155.557C780.957 162.164 775.497 167.542 768.787 167.542C763.592 167.542 758.993 164.234 757.309 159.49L759.334 158.567C760.649 162.556 764.472 165.352 768.797 165.352C774.285 165.352 778.742 160.963 778.742 155.557C778.742 150.152 774.285 145.762 768.797 145.762C758.435 145.678 750.041 137.356 750.041 127.142C750.041 116.872 758.529 108.512 768.957 108.512C776.395 108.512 783.116 112.837 786.172 119.425ZM768.797 149.079C756.59 148.995 746.673 139.182 746.673 127.141C746.673 115.036 756.666 105.194 768.958 105.194C777.777 105.194 785.593 110.199 789.218 118.036L787.203 118.959C783.938 111.895 776.897 107.384 768.958 107.384C757.896 107.384 748.897 116.247 748.897 127.141C748.897 138.035 757.896 146.898 768.958 146.898V146.907C773.727 146.991 777.588 150.831 777.588 155.556C777.588 160.327 773.652 164.214 768.797 164.214C764.832 164.214 761.492 161.651 760.394 158.081L762.429 157.15C763.148 159.973 765.722 162.024 768.797 162.024C772.422 162.024 775.374 159.125 775.374 155.556C775.374 151.987 772.422 149.079 768.797 149.079ZM866.681 105.679H868.905V151.017C868.905 165.63 856.839 177.512 842.001 177.512C827.164 177.512 815.098 165.63 815.098 151.017V105.679H817.322V151.017C817.322 164.418 828.394 175.322 842.001 175.322C855.609 175.322 866.681 164.418 866.681 151.017V105.679ZM842.002 174.224C829.01 174.224 818.43 163.814 818.43 151.018V105.68H820.654V151.018C820.654 162.611 830.221 172.043 841.993 172.043C853.764 172.043 863.34 162.611 863.34 151.018V105.68H865.564V151.018C865.564 163.814 854.994 174.224 842.002 174.224ZM842.002 170.943C830.846 170.943 821.77 161.997 821.77 151.018V105.68H823.994V151.018C823.994 160.794 832.075 168.753 842.002 168.753C851.928 168.753 860.01 160.794 860.01 151.018V105.68H862.233V151.018C862.233 162.005 853.159 170.943 842.002 170.943ZM842.002 167.653C832.681 167.653 825.101 160.188 825.101 151.018V105.68H827.325V151.018C827.325 158.987 833.911 165.473 842.002 165.473C850.093 165.473 856.679 158.987 856.679 151.018V105.68H858.903V151.011C858.903 160.19 851.323 167.656 842.002 167.656L842.002 167.653ZM842.002 164.373C834.517 164.373 828.432 158.381 828.432 151.019V105.681H830.656V151.019C830.656 157.179 835.747 162.192 842.002 162.192C848.256 162.192 853.347 157.178 853.347 151.019V105.681H855.571V151.011C855.571 158.383 849.487 164.373 842.002 164.373ZM895.221 177.504H892.997V106.704H895.221V177.504ZM898.646 177.504H896.423V106.704H898.646V177.504ZM902.072 177.504H899.848V106.704H902.072V177.504ZM905.507 177.504H903.283V106.704H905.507V177.504ZM937.105 163.972L908.934 163.972V165.165H937.105V167.346H908.934V168.539H937.105V170.729H908.934V171.913H937.105V174.103H908.934V175.295H937.105V177.486H908.934V177.504H906.71V106.704H908.934V161.782H937.105V163.972ZM993.892 109.229H949.273V107.039H993.892V109.229ZM993.892 112.613H949.273V110.423H993.892V112.613ZM993.892 115.986H949.273V113.796H993.892V115.986ZM993.892 119.37H949.273V117.18H993.892V119.37ZM949.276 122.743V120.553H993.902V122.743H979.556V177.505H977.342V122.743H976.131V177.505H973.907V122.743H972.705V177.505H970.481V122.743H969.27V177.505H967.046V122.743H965.845V177.505H963.621V122.743H949.276ZM1017.56 177.504H1015.34V106.704H1017.56V177.504ZM1020.99 177.504H1018.77V106.704H1020.99V177.504ZM1024.42 177.504H1022.2V106.704H1024.42V177.504ZM1027.85 177.504H1025.63V106.704H1027.85V177.504ZM1031.28 177.504H1029.06V106.704H1031.28V177.504ZM1057.6 177.504H1055.37V106.808H1057.6V177.504ZM1061.03 177.504H1058.81V106.808H1061.03V177.504ZM1064.46 177.504H1062.23V106.808H1064.46V177.504ZM1067.89 177.504H1065.67V106.808H1067.89V177.504ZM1114.02 106.806L1116.25 106.806V177.502H1113.5L1071.32 110.607V112.545L1071.34 112.536L1112.3 177.501H1109.69L1071.32 116.654V118.555L1108.49 177.501H1105.87L1071.31 122.701V124.602L1104.67 177.5H1102.05L1071.32 128.751V130.652L1100.86 177.502H1098.24L1071.32 134.8V177.502H1069.09V131.277L1069.07 131.24L1069.09 131.231V106.805H1071.53L1100.3 152.424V106.805H1102.52V155.946L1103.74 157.857V106.805H1105.95V161.39L1107.16 163.3V106.806H1109.39V166.823L1110.59 168.743V106.806H1112.81V172.266L1114.02 174.176L1114.02 106.806ZM1188.54 177.514H1186.31V146.059H1188.54V177.514ZM1191.9 177.514H1189.68V146.059H1191.9V177.514ZM1195.27 177.514H1193.05V146.059H1195.27V177.514ZM1198.63 177.514H1196.41V146.059H1198.63V177.514ZM1176.21 109.918C1184.04 109.918 1191.62 112.704 1197.56 117.793L1196.1 119.442C1190.58 114.727 1183.52 112.126 1176.21 112.126C1159.43 112.126 1145.76 125.574 1145.76 142.117C1145.76 158.65 1159.43 172.108 1176.21 172.108H1182.96V171.073H1176.21C1159.99 171.073 1146.8 158.082 1146.8 142.108C1146.8 126.134 1159.99 113.143 1176.21 113.143C1183.18 113.143 1189.94 115.594 1195.23 120.049L1193.79 121.717C1188.88 117.598 1182.65 115.334 1176.2 115.334C1161.21 115.334 1149.02 127.346 1149.02 142.108C1149.02 156.87 1161.21 168.882 1176.2 168.882H1182.95V167.848H1176.2C1161.79 167.848 1150.07 156.301 1150.07 142.107C1150.07 127.912 1161.79 116.366 1176.2 116.366C1182.3 116.366 1188.23 118.472 1192.91 122.311L1191.48 123.989C1187.21 120.475 1181.78 118.546 1176.2 118.546C1163.02 118.546 1152.29 129.114 1152.29 142.097C1152.29 155.08 1163.01 165.648 1176.2 165.648H1182.95V164.613H1176.2C1163.59 164.613 1153.33 154.502 1153.33 142.089C1153.33 129.676 1163.59 119.573 1176.2 119.573C1181.42 119.573 1186.53 121.353 1190.57 124.587L1189.17 126.283C1185.47 123.329 1180.98 121.764 1176.2 121.764C1164.82 121.764 1155.56 130.887 1155.56 142.099C1155.56 153.311 1164.82 162.435 1176.2 162.435H1182.95V146.06H1185.17V177.505H1176.2C1156.38 177.505 1140.25 161.624 1140.25 142.099C1140.25 122.574 1156.38 106.694 1176.2 106.694C1184.92 106.694 1193.32 109.816 1199.88 115.482L1198.41 117.132C1192.26 111.81 1184.38 108.884 1176.2 108.884C1157.61 108.884 1142.48 123.786 1142.48 142.099C1142.48 160.412 1157.61 175.313 1176.2 175.313H1182.95V174.288H1176.2C1158.19 174.288 1143.53 159.843 1143.53 142.099C1143.53 124.355 1158.19 109.918 1176.21 109.918Z" fill="#FA8D3F"/>
-    </svg>`
+  if (scrollProgressBar && docHeight > 0) {
+    const progress = Math.min(Math.max((scrollPos / docHeight) * 100, 0), 100);
+    scrollProgressBar.style.width = `${progress}%`;
   }
-  else {
-    console.log(1);
+
+  if (headerEl) {
+    if (scrollPos > 40) {
+      headerEl.style.boxShadow = "0 8px 30px rgba(12, 77, 125, 0.12)";
+      headerEl.style.height = "66px";
+    } else {
+      headerEl.style.boxShadow = "0 2px 20px rgba(12, 77, 125, 0.08)";
+      headerEl.style.height = "72px";
+    }
+  }
+
+  updateActiveNav();
+  updateParallaxPics(scrollPos);
+}
+
+window.addEventListener("scroll", handleScroll, { passive: true });
+
+/* ===================================================
+   Direct 1:1 3D Tilt & Specular Reflection (SKILL.md §2, §4)
+=================================================== */
+function initTiltCards() {
+  const tiltCards = document.querySelectorAll("[data-tilt]");
+  tiltCards.forEach(card => {
+    let shine = card.querySelector(".pic-shine");
+
+    card.addEventListener("pointermove", (e) => {
+      card.style.transition = "transform 0.08s ease-out";
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // Subtle physical rotation (max 4.5 deg - SKILL.md §2)
+      const rotateX = ((y - centerY) / centerY) * -4.5;
+      const rotateY = ((x - centerX) / centerX) * 4.5;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.015, 1.015, 1.015)`;
+
+      if (shine) {
+        shine.style.opacity = "1";
+        shine.style.background = `radial-gradient(circle at ${(x / rect.width) * 100}% ${(y / rect.height) * 100}%, rgba(255, 255, 255, 0.38) 0%, transparent 60%)`;
+      }
+    });
+
+    card.addEventListener("pointerleave", () => {
+      // Critically damped spring return (SKILL.md §4)
+      card.style.transition = "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)";
+      card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+      if (shine) {
+        shine.style.opacity = "0";
+      }
+    });
+  });
+}
+
+initTiltCards();
+
+/* ===================================================
+   Apple-Style Interactive Tax Optimization Calculator
+=================================================== */
+const calcRevSlider = document.getElementById("calcRevSlider");
+const calcRevDisplay = document.getElementById("calcRevDisplay");
+const calcSavingsVal = document.getElementById("calcSavingsVal");
+const calcTierVal = document.getElementById("calcTierVal");
+const calcGlowFill = document.getElementById("calcGlowFill");
+const calcIndustryBtns = document.querySelectorAll("#calcIndustryGroup .ind-btn");
+const calcCtaBtn = document.getElementById("calcCtaBtn");
+
+let currentIndustry = "it";
+let displayedSavings = 3800000;
+let targetSavings = 3800000;
+let savingsAnimId = null;
+
+function formatDram(num) {
+  return "֏ " + Math.round(num).toLocaleString("en-US");
+}
+
+/* Apple-style critically damped smooth number interpolation (SKILL.md §4, §11) */
+function animateSavingsTicker() {
+  const diff = targetSavings - displayedSavings;
+  if (Math.abs(diff) < 200) {
+    displayedSavings = targetSavings;
+    if (calcSavingsVal) calcSavingsVal.textContent = Math.round(targetSavings).toLocaleString("en-US");
+    savingsAnimId = null;
+    return;
+  }
+  
+  // Critically damped response step
+  displayedSavings += diff * 0.24;
+  if (calcSavingsVal) {
+    calcSavingsVal.textContent = Math.round(displayedSavings).toLocaleString("en-US");
+  }
+  savingsAnimId = requestAnimationFrame(animateSavingsTicker);
+}
+
+function updateCalculator(skipLerp = false) {
+  if (!calcRevSlider) return;
+  const rev = +calcRevSlider.value;
+  if (calcRevDisplay) calcRevDisplay.textContent = formatDram(rev);
+
+  // Dynamic slider track fill with Apple accent (SKILL.md §1, §2)
+  const min = +calcRevSlider.min || 3000000;
+  const max = +calcRevSlider.max || 250000000;
+  const pct = Math.min(Math.max(((rev - min) / (max - min)) * 100, 0), 100);
+  calcRevSlider.style.background = `linear-gradient(to right, var(--und-color) 0%, var(--und-color) ${pct}%, rgba(12, 77, 125, 0.12) ${pct}%, rgba(12, 77, 125, 0.12) 100%)`;
+
+  let rate = 0.15;
+  let tierName = "IT Startup Scale";
+
+  if (currentIndustry === "it") {
+    rate = 0.15;
+    tierName = rev > 80000000 ? "IT Enterprise Shield" : "IT Venture Pro";
+  } else if (currentIndustry === "trade") {
+    rate = 0.09;
+    tierName = rev > 60000000 ? "Retail Scale Partner" : "Commercial Standard";
+  } else if (currentIndustry === "services") {
+    rate = 0.12;
+    tierName = rev > 50000000 ? "Corporate Executive Tier" : "Business Core Plan";
+  } else if (currentIndustry === "prod") {
+    rate = 0.14;
+    tierName = rev > 100000000 ? "Industrial Export Master" : "Production Standard";
+  }
+
+  targetSavings = Math.round(rev * rate);
+  if (skipLerp) {
+    displayedSavings = targetSavings;
+    if (calcSavingsVal) calcSavingsVal.textContent = targetSavings.toLocaleString("en-US");
+  } else {
+    if (!savingsAnimId) {
+      savingsAnimId = requestAnimationFrame(animateSavingsTicker);
+    }
+  }
+
+  if (calcTierVal) {
+    calcTierVal.textContent = tierName;
+  }
+  if (calcGlowFill) {
+    const fillPercent = Math.min(Math.max((rev / 250000000) * 100, 15), 100);
+    calcGlowFill.style.width = `${fillPercent}%`;
+  }
+
+  // Dynamic ambient luminescence (SKILL.md §12)
+  const resultsCard = document.querySelector(".calc-results-card");
+  if (resultsCard) {
+    const intensity = Math.min(Math.max((rev / 250000000), 0.2), 1);
+    resultsCard.style.boxShadow = `0 ${15 + intensity * 15}px ${35 + intensity * 25}px rgba(12, 77, 125, ${0.25 + intensity * 0.2})`;
+  }
+}
+
+if (calcRevSlider) {
+  calcRevSlider.addEventListener("input", () => updateCalculator(false));
+}
+
+calcIndustryBtns.forEach(btn => {
+  btn.addEventListener("pointerdown", () => {
+    btn.style.transform = "scale(0.95)";
+  });
+
+  const resetBtnScale = () => {
+    btn.style.transform = "";
+  };
+  btn.addEventListener("pointerup", resetBtnScale);
+  btn.addEventListener("pointercancel", resetBtnScale);
+
+  btn.addEventListener("click", () => {
+    calcIndustryBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentIndustry = btn.getAttribute("data-ind") || "it";
+
+    // Tactile micro-bounce on results card (SKILL.md §4)
+    const resultsCard = document.querySelector(".calc-results-card");
+    if (resultsCard) {
+      resultsCard.style.transform = "scale(1.015)";
+      setTimeout(() => {
+        resultsCard.style.transform = "";
+      }, 200);
+    }
+
+    updateCalculator(false);
+  });
+});
+
+if (calcCtaBtn) {
+  calcCtaBtn.addEventListener("click", () => {
+    const messageInput = document.querySelector("#modalForm textarea[name='message']");
+    const serviceSelect = document.querySelector("#modalForm select[name='service']");
+    if (serviceSelect) {
+      serviceSelect.value = currentIndustry === "it" ? "tax" : "accounting";
+    }
+    if (messageInput && calcRevSlider) {
+      messageInput.value = `Հետաքրքրված եմ ${currentIndustry.toUpperCase()} փաթեթով (Տարեկան շրջանառություն՝ ${formatDram(+calcRevSlider.value)}):`;
+    }
+    openConsultationModal(e ? (e.currentTarget || e.target) : null);
+  });
+}
+
+updateCalculator(true);
+
+/* ===================================================
+   Hero Buttons & Theme Toggling
+=================================================== */
+let start = document.getElementById("start");
+if (start) {
+  start.addEventListener("click", (e) => {
+    e.preventDefault();
+    openConsultationModal(e ? (e.currentTarget || e.target) : null);
+  });
+}
+
+let task = document.getElementById("task");
+if (task) {
+  task.addEventListener("click", () => {
+    location.href = "#services";
+  });
+}
+
+let logo = document.getElementById("logo");
+let colorMode = document.getElementById("colorMode");
+
+colorMode.addEventListener("click", () => {
+  const currentMain = getComputedStyle(document.documentElement).getPropertyValue("--main-color").trim();
+  if (currentMain === "#0C4D7D") {
+    // Switch to Dark Mode (Apple Obsidian / Space Gray)
     colorMode.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-brightness-high-fill" viewBox="0 0 16 16">
-  <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
-</svg>
-    `
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-moon-fill" viewBox="0 0 16 16">
+        <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
+      </svg>
+    `;
+    document.documentElement.style.setProperty('--main-color', '#38bdf8');
+    document.documentElement.style.setProperty('--und-color', '#fb923c');
+    document.documentElement.style.setProperty('--main-text', '#cbd5e1');
+    document.documentElement.style.setProperty('--main-bgc', '#0f172a');
+    document.documentElement.style.setProperty('--secondary-bgc', '#1e293b');
+    document.documentElement.style.setProperty('--hover-color', '#0284c7');
+    document.documentElement.style.setProperty('--big-text', '#f8fafc');
+    document.documentElement.style.setProperty('--hd-bgc', 'rgba(15, 23, 42, 0.88)');
+    document.documentElement.style.setProperty('--pp-color', '#94a3b8');
+    document.documentElement.style.setProperty('--all-color', '#f1f5f9');
+    document.documentElement.style.backgroundColor = "#0f172a";
+  } else {
+    // Switch to Light Mode
+    colorMode.innerHTML = `
+      <svg class="bi bi-brightness-high-fill" fill="currentColor" height="20" viewBox="0 0 16 16" width="20" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"></path>
+      </svg>
+    `;
     document.documentElement.style.setProperty('--main-color', '#0C4D7D');
     document.documentElement.style.setProperty('--und-color', '#D76E23');
     document.documentElement.style.setProperty('--main-text', '#919191');
     document.documentElement.style.setProperty('--main-bgc', '#f8f9fa');
-    document.documentElement.style.setProperty('--secondary-bgc', '#fff');
+    document.documentElement.style.setProperty('--secondary-bgc', '#ffffff');
     document.documentElement.style.setProperty('--hover-color', '#2d5d7f');
     document.documentElement.style.setProperty('--big-text', '#1e1e1e');
     document.documentElement.style.setProperty('--hd-bgc', 'rgba(255, 255, 255, 0.9)');
-    document.documentElement.style.setProperty('--pp-color', '#666');
-    document.documentElement.style.setProperty('--all-color', '#333');
-    document.documentElement.style.backgroundColor = "#fff"
-    logo.firstElementChild.innerHTML = `<svg viewBox="0 0 1200 184" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M24.947 60.2623C31.7586 52.8867 38.5269 45.5544 45.3819 38.092C42.5184 34.274 41.0433 30.1089 41.8242 25.3364C42.3883 21.7787 43.9936 18.7851 46.6401 16.3554C51.6729 11.6697 59.2221 10.8454 65.1227 14.3597C71.8042 18.3078 74.0169 25.0761 71.5872 34.1872C76.4031 37.0073 81.219 39.8274 86.2518 42.7343C89.1587 39.22 92.7597 36.9639 97.3153 36.5301C101.871 36.0962 105.862 37.5279 109.42 40.5216C115.538 35.1851 121.568 29.892 127.556 24.6856C123.304 14.4464 124.996 6.85384 132.415 2.29828C139.01 -1.73665 147.383 -0.348282 152.416 5.59564C157.319 11.3226 157.275 19.9999 152.329 25.7269C146.646 32.2782 138.749 32.8422 129.812 27.2454C123.824 32.4951 117.794 37.7449 111.806 42.9946C115.754 52.5396 114.843 58.874 108.856 63.9936C103.78 68.3322 96.4042 68.8962 90.6772 65.3819C84.2126 61.4338 82.1735 55.056 84.4296 45.6846C79.874 43.038 75.2751 40.3047 70.6327 37.7015C70.2856 37.4846 69.5047 37.5713 69.201 37.875C60.9142 44.5999 56.9661 45.1205 47.8549 40.5216C41.0867 47.8539 34.275 55.2295 27.42 62.692C30.5004 66.7703 31.9322 71.2391 30.8041 76.3153C29.9798 80.0899 27.984 83.1269 24.947 85.4264C18.8295 90.1121 10.1956 89.5047 4.72897 84.1248C-0.867857 78.6581 -1.56204 70.0242 3.08029 63.7332C8.02633 56.9216 16.0094 55.62 24.947 60.2623ZM149.075 15.6613C149.119 11.0189 145.301 7.11416 140.615 7.02739C135.972 6.984 132.024 10.802 131.938 15.4443C131.851 20.1734 135.799 24.2083 140.528 24.2083C145.17 24.2083 149.032 20.347 149.075 15.6613ZM65.7735 27.766C65.7735 23.1237 61.9121 19.2189 57.2264 19.2189C52.584 19.2189 48.6793 23.0369 48.6359 27.7226C48.5925 32.4517 52.584 36.4433 57.2698 36.3999C61.9555 36.3131 65.7735 32.4084 65.7735 27.766ZM90.3301 51.8888C90.2433 56.5311 94.0179 60.5227 98.6603 60.6528C103.346 60.783 107.381 56.8782 107.468 52.1057C107.511 47.4634 103.693 43.5586 99.0074 43.4719C94.3216 43.4285 90.3735 47.2465 90.3301 51.8888ZM24.1226 72.8877C24.1226 68.2454 20.2613 64.3407 15.5755 64.3407C10.9332 64.2973 7.02844 68.1586 6.98506 72.801C6.94167 77.5301 10.9332 81.5216 15.6189 81.4782C20.3046 81.4348 24.1226 77.5301 24.1226 72.8877Z" fill="#0C4D7D"/>
-<path d="M156.104 118.053C156.104 137.273 156.104 156.537 156.104 175.757C156.104 181.397 153.501 183.957 147.904 183.957C142.784 183.957 137.621 183.957 132.502 183.957C127.729 183.957 124.952 181.137 124.952 176.407C124.952 137.49 124.952 98.6158 124.952 59.6983C124.952 54.9258 127.773 52.1491 132.502 52.1491C137.838 52.1057 143.218 52.1057 148.555 52.1491C153.327 52.1491 156.104 54.9692 156.104 59.6983C156.147 79.1354 156.104 98.6158 156.104 118.053ZM132.068 59.2645C132.068 62.3449 132.068 65.165 132.068 67.9417C132.024 83.1269 131.981 98.3121 131.981 113.454C131.981 133.889 132.024 154.367 131.981 174.802C131.981 176.407 132.415 176.928 134.064 176.885C138.402 176.798 142.741 176.755 147.079 176.885C148.772 176.928 149.119 176.321 149.119 174.759C149.075 140.006 149.119 105.211 149.119 70.4581C149.119 66.7269 149.119 62.9957 149.119 59.1777C143.305 59.2645 137.751 59.2645 132.068 59.2645Z" fill="#0C4D7D"/>
-<path d="M41.6508 128.249C41.6508 112.543 41.6508 96.8804 41.6508 81.1745C41.6508 75.5343 44.254 72.9745 49.8508 72.9745C54.9704 72.9745 60.1334 72.9745 65.2529 72.9745C70.0254 73.0179 72.8022 75.7946 72.8022 80.5237C72.8022 112.499 72.8022 144.432 72.8022 176.407C72.8022 181.18 69.9821 183.957 65.2529 183.957C59.9164 183.957 54.5365 183.957 49.2 183.957C44.4275 183.957 41.6508 181.136 41.6508 176.407C41.6074 160.354 41.6508 144.302 41.6508 128.249ZM48.636 80.0899C48.636 84.3851 48.636 88.5068 48.636 92.6285C48.636 109.462 48.636 126.296 48.636 143.13C48.636 153.673 48.7228 164.216 48.636 174.802C48.636 176.581 49.2 177.015 50.8921 176.971C55.0138 176.885 59.1355 176.841 63.2572 176.971C65.2096 177.058 65.817 176.494 65.817 174.455C65.7736 146.775 65.817 119.094 65.817 91.4137C65.817 87.6825 65.817 83.9512 65.817 80.0899C60.0466 80.0899 54.4931 80.0899 48.636 80.0899Z" fill="#0C4D7D"/>
-<path d="M114.453 139.095C114.453 151.374 114.453 163.695 114.453 175.974C114.453 181.31 111.806 183.957 106.47 184C101.264 184 96.0572 184 90.8508 184C86.0784 184 83.3016 181.18 83.3016 176.451C83.3016 151.417 83.3016 126.426 83.3016 101.393C83.3016 96.6201 86.1217 93.8433 90.8508 93.8433C96.1874 93.7999 101.567 93.7999 106.904 93.8433C111.676 93.8433 114.453 96.6634 114.453 101.393C114.496 113.931 114.453 126.513 114.453 139.095ZM90.417 100.915C90.417 104.299 90.417 107.38 90.417 110.504C90.417 132.023 90.417 153.586 90.3302 175.106C90.3302 176.538 90.8075 176.971 92.1958 176.928C96.4477 176.841 100.743 176.798 104.995 176.928C106.86 176.971 107.468 176.538 107.468 174.542C107.424 153.803 107.468 133.065 107.468 112.326C107.468 108.508 107.468 104.733 107.468 100.872C101.611 100.915 96.1006 100.915 90.417 100.915Z" fill="#0C4D7D"/>
-<path d="M31.1513 149.291C31.1513 158.272 31.1513 167.209 31.1513 176.19C31.1513 181.223 28.418 183.957 23.3852 183.957C18.0921 183.957 12.8423 183.957 7.54921 183.957C2.77672 183.957 0 181.136 0 176.407C0 158.315 0 140.267 0 122.175C0 117.402 2.82011 114.625 7.54921 114.625C12.8857 114.582 18.2656 114.582 23.6021 114.625C28.3746 114.625 31.1513 117.445 31.1513 122.175C31.1947 131.199 31.1513 140.267 31.1513 149.291ZM7.11535 121.741C7.11535 124.995 7.11535 127.988 7.11535 131.025C7.11535 145.69 7.11535 160.354 7.02858 175.019C7.02858 176.581 7.5926 176.971 9.06773 176.928C13.3196 176.841 17.6148 176.841 21.8667 176.928C23.6455 176.971 24.2095 176.451 24.2095 174.629C24.1662 160.745 24.2095 146.905 24.2095 133.021C24.2095 129.29 24.2095 125.559 24.2095 121.697C18.3524 121.741 12.8423 121.741 7.11535 121.741Z" fill="#0C4D7D"/>
-<path d="M193.246 179.343H190V76H193.246V179.343ZM198.26 179.343H195.014V76H198.26V179.343ZM203.26 179.343H200.014V76H203.26V179.343ZM208.26 179.343H205.014V76H208.26V179.343ZM253.798 121.462V76.0008H257.044V179.358H253.798V144.385H213.271V179.345H210.026V76.0019H213.271V121.463L253.798 121.462ZM253.798 124.659H213.271V126.401H253.798V124.659ZM213.273 131.324H253.799V129.583H213.273V131.324ZM253.798 134.522H213.271V136.263H253.798V134.522ZM213.273 141.187H253.799V139.446H213.273V141.187ZM262.044 179.343H258.798V76H262.044V179.343ZM267.059 179.343H263.813V76H267.059V179.343ZM272.059 179.343H268.813V76H272.059V179.343ZM277.073 179.343H273.827V76H277.073V179.343ZM345.275 76.0008H348.576L329.819 179.343H326.518L345.275 76.0008ZM340.481 76.0008H343.768L324.998 179.343H321.711L340.481 76.0008ZM335.662 76.0008H338.963L320.206 179.343H316.905L335.662 76.0008ZM330.868 76.0008H334.155L315.398 179.343H312.097L330.868 76.0008ZM420.235 76.0008L420.235 76.0282H423.729L442.486 179.371H439.185L427.5 115.042L399.696 179.371H396.173L426.464 109.301L425.981 106.662L394.544 179.371H391.022L424.931 100.922L424.448 98.2825L389.392 179.371H385.87L423.397 92.5453L422.927 89.92L384.251 179.374H380.729L421.875 84.168L421.392 81.5289L379.097 179.364H372.84L346.072 116.355L334.635 179.364H331.334L350.091 76.021H353.392L353.379 76.089L386.225 154.686L420.235 76.0008ZM375.952 178.432L376.656 176.786L347.595 107.873L347.111 110.539L375.952 178.432ZM378.436 172.678L379.251 170.801L349.126 99.3856L348.642 102.052L378.436 172.678ZM381.034 166.678L381.849 164.801L350.674 90.8948L350.19 93.561L381.034 166.678ZM383.631 160.679L384.432 158.816L352.305 81.9333L351.739 85.0755L383.631 160.679ZM425.179 76.0008H428.48L447.237 179.343H443.949L425.179 76.0008ZM429.987 76.0008H433.288L452.045 179.343H448.744L429.987 76.0008ZM434.791 76.0008H438.079L456.849 179.343H453.548L434.791 76.0008ZM442.884 76.0008L461.654 179.343H458.353L439.596 76.0008H442.884Z" fill="#D76E23"/>
-<path d="M514.907 142.138C514.907 129.649 525.231 119.482 537.911 119.482H542.349V121.672H537.911C526.451 121.672 517.131 130.852 517.131 142.137C517.131 153.423 526.452 162.603 537.911 162.603H542.349V164.793H537.911C525.23 164.793 514.907 154.625 514.907 142.138ZM511.68 142.138C511.68 127.897 523.452 116.303 537.91 116.303H542.348V118.493H537.91C524.672 118.493 513.902 129.098 513.902 142.137C513.902 155.176 524.671 165.781 537.91 165.781H542.348V167.971H537.91C523.441 167.971 511.68 156.377 511.68 142.138ZM508.454 142.138C508.454 126.145 521.673 113.127 537.911 113.127H542.349V115.317H537.911C522.893 115.317 510.676 127.349 510.676 142.139C510.676 156.93 522.892 168.962 537.911 168.962H542.349V171.152H537.911C521.663 171.152 508.454 158.131 508.454 142.138ZM505.227 142.138C505.227 124.384 519.894 109.949 537.911 109.949H542.349V112.139H537.911C521.115 112.139 507.449 125.596 507.449 142.139C507.449 158.683 521.113 172.14 537.911 172.14H542.349V174.33H537.911C519.894 174.33 505.227 159.895 505.227 142.141V142.138ZM537.911 106.77L542.35 106.77V108.961H537.911C519.336 108.961 504.224 123.844 504.224 142.137C504.224 160.43 519.337 175.314 537.911 175.314H542.35V177.504H537.911C518.115 177.504 502 161.633 502 142.136C502 122.64 518.106 106.77 537.911 106.77ZM602.094 105C622.903 105 639.831 121.663 639.831 142.165C639.831 162.659 622.902 179.331 602.094 179.331C581.286 179.331 564.357 162.658 564.357 142.165C564.357 121.672 581.286 105 602.094 105ZM602.094 177.131C621.673 177.131 637.607 161.438 637.607 142.157C637.607 122.876 621.672 107.182 602.094 107.182C582.517 107.182 566.581 122.867 566.581 142.157C566.581 161.447 582.517 177.131 602.094 177.131ZM602.094 108.28C621.067 108.28 636.501 123.48 636.491 142.155C636.491 160.831 621.056 176.031 602.094 176.031C583.132 176.031 567.697 160.84 567.697 142.155C567.697 123.479 583.121 108.28 602.094 108.28ZM602.094 173.851C619.837 173.851 634.277 159.629 634.269 142.164C634.269 124.68 619.839 110.469 602.094 110.469C584.349 110.469 569.911 124.69 569.911 142.164C569.911 159.637 584.352 173.851 602.094 173.851ZM602.094 111.559C619.231 111.559 633.161 125.287 633.161 142.155C633.161 159.024 619.222 172.751 602.094 172.751C584.966 172.751 571.027 159.024 571.027 142.155C571.027 125.287 584.966 111.559 602.094 111.559ZM602.094 170.561C618.001 170.561 630.936 157.821 630.936 142.156C630.936 126.491 618 113.751 602.094 113.751C586.188 113.751 573.252 126.491 573.252 142.156C573.252 157.821 586.188 170.561 602.094 170.561ZM602.094 114.842C617.386 114.842 629.831 127.097 629.831 142.158C629.831 157.218 617.386 169.474 602.094 169.474C586.802 169.474 574.358 157.218 574.358 142.158C574.358 127.097 586.802 114.842 602.094 114.842ZM602.094 167.281C616.165 167.281 627.606 156.014 627.606 142.156C627.606 128.298 616.165 117.031 602.094 117.031C588.023 117.031 576.582 128.298 576.582 142.156C576.582 156.014 588.023 167.281 602.094 167.281ZM602.094 118.129C615.55 118.129 626.499 128.902 626.49 142.155C626.49 155.398 615.55 166.181 602.094 166.181C588.638 166.181 577.689 155.407 577.689 142.155C577.689 128.911 588.638 118.129 602.094 118.129ZM602.094 164.001C614.329 164.001 624.275 154.206 624.275 142.156C624.275 130.106 614.32 120.311 602.094 120.311C589.868 120.311 579.913 130.106 579.913 142.156C579.913 154.206 589.868 164.001 602.094 164.001ZM664.013 177.504H661.79V106.808H664.013V177.504ZM667.448 177.504H665.225V106.808H667.448V177.504ZM670.874 177.504H668.65V106.808H670.874V177.504ZM674.309 177.504H672.085V106.808H674.309V177.504ZM720.441 106.806L722.665 106.806V177.502H719.921L677.735 110.607V112.545L677.754 112.536L718.718 177.501H716.106L677.734 116.654V118.555L714.903 177.501H712.291L677.732 122.701V124.602L711.09 177.5H708.469L677.734 128.751V130.652L707.276 177.502H704.655L677.734 134.8V177.502H675.51V131.277L675.491 131.24L675.51 131.231V106.805H677.951L706.719 152.424V106.805H708.943V155.946L710.154 157.857V106.805H712.368V161.39L713.579 163.3V106.806H715.803V166.823L717.005 168.743V106.806H719.229V172.266L720.44 174.176L720.441 106.806ZM768.958 133.61C781.175 133.704 791.091 143.508 791.091 155.558C791.091 167.654 781.099 177.505 768.807 177.505C759.637 177.505 751.527 172.09 748.121 163.693L749.9 162.882L750.137 162.789C753.174 170.394 760.508 175.314 768.798 175.314C779.859 175.314 788.859 166.451 788.859 155.557C788.859 144.663 779.86 135.8 768.798 135.8V135.772C764.029 135.688 760.168 131.849 760.168 127.124C760.168 122.352 764.114 118.466 768.959 118.466C772.545 118.466 775.63 120.563 776.993 123.601L774.977 124.523C773.965 122.24 771.656 120.656 768.959 120.656C765.344 120.656 762.391 123.563 762.391 127.133C762.391 130.702 765.333 133.61 768.958 133.61ZM759.013 127.132C759.013 132.537 763.479 136.927 768.958 136.936C779.32 137.02 787.714 145.342 787.714 155.557C787.714 165.827 779.226 174.186 768.798 174.186C761 174.186 753.998 169.424 751.178 162.294L753.193 161.372C755.654 167.737 761.871 171.996 768.797 171.996C778.005 171.996 785.49 164.624 785.49 155.557C785.49 146.489 778.004 139.117 768.797 139.117V139.108C762.164 139.024 756.789 133.684 756.789 127.132C756.789 120.525 762.249 115.147 768.959 115.147C773.794 115.147 778.1 117.999 780.04 122.211L778.024 123.134C776.454 119.685 772.915 117.337 768.959 117.337C763.471 117.337 759.013 121.727 759.013 127.132ZM783.096 120.823L781.08 121.755C778.951 117.133 774.201 114.03 768.958 114.03C761.615 114.03 755.644 119.91 755.644 127.142C755.644 134.374 761.615 140.255 768.958 140.255C777.446 140.339 784.335 147.161 784.335 155.548C784.335 163.983 777.37 170.851 768.797 170.851C762.324 170.851 756.494 166.797 754.252 160.879L756.277 159.957C758.151 165.111 763.195 168.661 768.796 168.661C776.14 168.661 782.111 162.781 782.111 155.549C782.111 148.317 776.14 142.436 768.796 142.436V142.427C760.308 142.343 753.42 135.521 753.42 127.133C753.42 118.699 760.384 111.83 768.958 111.83C775.071 111.83 780.608 115.446 783.096 120.823ZM786.172 119.425L784.146 120.339C781.459 114.514 775.516 110.693 768.949 110.693C759.741 110.693 752.256 118.065 752.256 127.132C752.256 136.2 759.742 143.572 768.949 143.572V143.581C775.582 143.665 780.957 149.005 780.957 155.557C780.957 162.164 775.497 167.542 768.787 167.542C763.592 167.542 758.993 164.234 757.309 159.49L759.334 158.567C760.649 162.556 764.472 165.352 768.797 165.352C774.285 165.352 778.742 160.963 778.742 155.557C778.742 150.152 774.285 145.762 768.797 145.762C758.435 145.678 750.041 137.356 750.041 127.142C750.041 116.872 758.529 108.512 768.957 108.512C776.395 108.512 783.116 112.837 786.172 119.425ZM768.797 149.079C756.59 148.995 746.673 139.182 746.673 127.141C746.673 115.036 756.666 105.194 768.958 105.194C777.777 105.194 785.593 110.199 789.218 118.036L787.203 118.959C783.938 111.895 776.897 107.384 768.958 107.384C757.896 107.384 748.897 116.247 748.897 127.141C748.897 138.035 757.896 146.898 768.958 146.898V146.907C773.727 146.991 777.588 150.831 777.588 155.556C777.588 160.327 773.652 164.214 768.797 164.214C764.832 164.214 761.492 161.651 760.394 158.081L762.429 157.15C763.148 159.973 765.722 162.024 768.797 162.024C772.422 162.024 775.374 159.125 775.374 155.556C775.374 151.987 772.422 149.079 768.797 149.079ZM866.681 105.679H868.905V151.017C868.905 165.63 856.839 177.512 842.001 177.512C827.164 177.512 815.098 165.63 815.098 151.017V105.679H817.322V151.017C817.322 164.418 828.394 175.322 842.001 175.322C855.609 175.322 866.681 164.418 866.681 151.017V105.679ZM842.002 174.224C829.01 174.224 818.43 163.814 818.43 151.018V105.68H820.654V151.018C820.654 162.611 830.221 172.043 841.993 172.043C853.764 172.043 863.34 162.611 863.34 151.018V105.68H865.564V151.018C865.564 163.814 854.994 174.224 842.002 174.224ZM842.002 170.943C830.846 170.943 821.77 161.997 821.77 151.018V105.68H823.994V151.018C823.994 160.794 832.075 168.753 842.002 168.753C851.928 168.753 860.01 160.794 860.01 151.018V105.68H862.233V151.018C862.233 162.005 853.159 170.943 842.002 170.943ZM842.002 167.653C832.681 167.653 825.101 160.188 825.101 151.018V105.68H827.325V151.018C827.325 158.987 833.911 165.473 842.002 165.473C850.093 165.473 856.679 158.987 856.679 151.018V105.68H858.903V151.011C858.903 160.19 851.323 167.656 842.002 167.656L842.002 167.653ZM842.002 164.373C834.517 164.373 828.432 158.381 828.432 151.019V105.681H830.656V151.019C830.656 157.179 835.747 162.192 842.002 162.192C848.256 162.192 853.347 157.178 853.347 151.019V105.681H855.571V151.011C855.571 158.383 849.487 164.373 842.002 164.373ZM895.221 177.504H892.997V106.704H895.221V177.504ZM898.646 177.504H896.423V106.704H898.646V177.504ZM902.072 177.504H899.848V106.704H902.072V177.504ZM905.507 177.504H903.283V106.704H905.507V177.504ZM937.105 163.972L908.934 163.972V165.165H937.105V167.346H908.934V168.539H937.105V170.729H908.934V171.913H937.105V174.103H908.934V175.295H937.105V177.486H908.934V177.504H906.71V106.704H908.934V161.782H937.105V163.972ZM993.892 109.229H949.273V107.039H993.892V109.229ZM993.892 112.613H949.273V110.423H993.892V112.613ZM993.892 115.986H949.273V113.796H993.892V115.986ZM993.892 119.37H949.273V117.18H993.892V119.37ZM949.276 122.743V120.553H993.902V122.743H979.556V177.505H977.342V122.743H976.131V177.505H973.907V122.743H972.705V177.505H970.481V122.743H969.27V177.505H967.046V122.743H965.845V177.505H963.621V122.743H949.276ZM1017.56 177.504H1015.34V106.704H1017.56V177.504ZM1020.99 177.504H1018.77V106.704H1020.99V177.504ZM1024.42 177.504H1022.2V106.704H1024.42V177.504ZM1027.85 177.504H1025.63V106.704H1027.85V177.504ZM1031.28 177.504H1029.06V106.704H1031.28V177.504ZM1057.6 177.504H1055.37V106.808H1057.6V177.504ZM1061.03 177.504H1058.81V106.808H1061.03V177.504ZM1064.46 177.504H1062.23V106.808H1064.46V177.504ZM1067.89 177.504H1065.67V106.808H1067.89V177.504ZM1114.02 106.806L1116.25 106.806V177.502H1113.5L1071.32 110.607V112.545L1071.34 112.536L1112.3 177.501H1109.69L1071.32 116.654V118.555L1108.49 177.501H1105.87L1071.31 122.701V124.602L1104.67 177.5H1102.05L1071.32 128.751V130.652L1100.86 177.502H1098.24L1071.32 134.8V177.502H1069.09V131.277L1069.07 131.24L1069.09 131.231V106.805H1071.53L1100.3 152.424V106.805H1102.52V155.946L1103.74 157.857V106.805H1105.95V161.39L1107.16 163.3V106.806H1109.39V166.823L1110.59 168.743V106.806H1112.81V172.266L1114.02 174.176L1114.02 106.806ZM1188.54 177.514H1186.31V146.059H1188.54V177.514ZM1191.9 177.514H1189.68V146.059H1191.9V177.514ZM1195.27 177.514H1193.05V146.059H1195.27V177.514ZM1198.63 177.514H1196.41V146.059H1198.63V177.514ZM1176.21 109.918C1184.04 109.918 1191.62 112.704 1197.56 117.793L1196.1 119.442C1190.58 114.727 1183.52 112.126 1176.21 112.126C1159.43 112.126 1145.76 125.574 1145.76 142.117C1145.76 158.65 1159.43 172.108 1176.21 172.108H1182.96V171.073H1176.21C1159.99 171.073 1146.8 158.082 1146.8 142.108C1146.8 126.134 1159.99 113.143 1176.21 113.143C1183.18 113.143 1189.94 115.594 1195.23 120.049L1193.79 121.717C1188.88 117.598 1182.65 115.334 1176.2 115.334C1161.21 115.334 1149.02 127.346 1149.02 142.108C1149.02 156.87 1161.21 168.882 1176.2 168.882H1182.95V167.848H1176.2C1161.79 167.848 1150.07 156.301 1150.07 142.107C1150.07 127.912 1161.79 116.366 1176.2 116.366C1182.3 116.366 1188.23 118.472 1192.91 122.311L1191.48 123.989C1187.21 120.475 1181.78 118.546 1176.2 118.546C1163.02 118.546 1152.29 129.114 1152.29 142.097C1152.29 155.08 1163.01 165.648 1176.2 165.648H1182.95V164.613H1176.2C1163.59 164.613 1153.33 154.502 1153.33 142.089C1153.33 129.676 1163.59 119.573 1176.2 119.573C1181.42 119.573 1186.53 121.353 1190.57 124.587L1189.17 126.283C1185.47 123.329 1180.98 121.764 1176.2 121.764C1164.82 121.764 1155.56 130.887 1155.56 142.099C1155.56 153.311 1164.82 162.435 1176.2 162.435H1182.95V146.06H1185.17V177.505H1176.2C1156.38 177.505 1140.25 161.624 1140.25 142.099C1140.25 122.574 1156.38 106.694 1176.2 106.694C1184.92 106.694 1193.32 109.816 1199.88 115.482L1198.41 117.132C1192.26 111.81 1184.38 108.884 1176.2 108.884C1157.61 108.884 1142.48 123.786 1142.48 142.099C1142.48 160.412 1157.61 175.313 1176.2 175.313H1182.95V174.288H1176.2C1158.19 174.288 1143.53 159.843 1143.53 142.099C1143.53 124.355 1158.19 109.918 1176.21 109.918Z" fill="#D76E23"/>
-</svg>
-`
+    document.documentElement.style.setProperty('--pp-color', '#666666');
+    document.documentElement.style.setProperty('--all-color', '#333333');
+    document.documentElement.style.backgroundColor = "#ffffff";
   }
-})
+});
 
+/* ===================================================
+   i18n Multi-Language Translation System
+=================================================== */
 let translations = {};
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -211,16 +380,9 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
       translations = data;
-
-      let lang = localStorage.getItem("lang");
-      if (!lang) {
-        lang = "hy";
-        localStorage.setItem("lang", lang);
-      }
-
+      let lang = localStorage.getItem("lang") || "hy";
       const sel = document.getElementById("languages");
       if (sel) sel.value = lang;
-
       changeLanguage(lang);
     });
 });
@@ -252,11 +414,26 @@ const consultationModal = document.getElementById("consultationModal");
 const modalCloseBtn = document.getElementById("modalCloseBtn");
 const floatingBookBtn = document.getElementById("floatingBookBtn");
 
-function openConsultationModal() {
+function openConsultationModal(originEl) {
   if (consultationModal) {
+    const modalCard = consultationModal.querySelector(".modal-card");
+    if (modalCard && originEl && originEl.getBoundingClientRect) {
+      const rect = originEl.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+      modalCard.style.transformOrigin = `${originX}px ${originY}px`;
+    } else if (modalCard) {
+      modalCard.style.transformOrigin = "center center";
+    }
     consultationModal.classList.add("active");
     consultationModal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    if (typeof window.syncWizardWithCalculator === "function") {
+      window.syncWizardWithCalculator();
+    }
+    if (typeof window.resetWizardStep === "function") {
+      window.resetWizardStep();
+    }
   }
 }
 
@@ -270,13 +447,6 @@ function closeConsultationModal() {
 
 if (floatingBookBtn) {
   floatingBookBtn.addEventListener("click", openConsultationModal);
-}
-
-if (start) {
-  start.addEventListener("click", (e) => {
-    e.preventDefault();
-    openConsultationModal();
-  });
 }
 
 if (modalCloseBtn) {
@@ -337,9 +507,7 @@ setupFormSubmission(document.getElementById("contUs"), document.getElementById("
 
 const headerCtaBtn = document.getElementById("headerCtaBtn");
 if (headerCtaBtn) {
-  headerCtaBtn.addEventListener("click", () => {
-    openConsultationModal();
-  });
+  headerCtaBtn.addEventListener("click", openConsultationModal);
 }
 
 const serviceMap = {
@@ -359,24 +527,28 @@ document.querySelectorAll(".service").forEach(card => {
     if (modalSelect) {
       modalSelect.value = serviceValue;
     }
-    openConsultationModal();
+    openConsultationModal(e ? (e.currentTarget || e.target) : null);
   });
 });
 
 /* ===================================================
-   Testimonials Carousel Logic
+   WWDC Fluid Testimonials Carousel Drag & Spring Momentum
+   (SKILL.md §2 Direct Manipulation, §6 Momentum Projection, §9 Rubber-band)
 =================================================== */
 const revTrack = document.getElementById("revTrack");
 const revPrev = document.getElementById("revPrev");
 const revNext = document.getElementById("revNext");
 const revDots = document.querySelectorAll("#revDots .dot");
+const testimonialsViewport = document.querySelector(".testimonials-viewport");
+
 let currentReviewIndex = 0;
 const totalReviews = document.querySelectorAll(".testimonial-card").length || 3;
 let autoReviewInterval = null;
 
-function updateReviewSlide(index) {
+function updateReviewSlide(index, withTransition = true) {
   currentReviewIndex = (index + totalReviews) % totalReviews;
   if (revTrack) {
+    revTrack.style.transition = withTransition ? "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)" : "none";
     revTrack.style.transform = `translateX(-${currentReviewIndex * 100}%)`;
   }
   revDots.forEach((dot, idx) => {
@@ -388,7 +560,7 @@ function startAutoSlide() {
   stopAutoSlide();
   autoReviewInterval = setInterval(() => {
     updateReviewSlide(currentReviewIndex + 1);
-  }, 6000);
+  }, 6500);
 }
 
 function stopAutoSlide() {
@@ -420,29 +592,554 @@ revDots.forEach((dot) => {
   });
 });
 
-const testimonialsViewport = document.querySelector(".testimonials-viewport");
-if (testimonialsViewport) {
+// Apple Rubber-band formula (SKILL.md §9)
+function rubberband(overshoot, dimension = 600, constant = 0.55) {
+  return (overshoot * dimension * constant) / (dimension + constant * Math.abs(overshoot));
+}
+
+// Apple Momentum projection formula (SKILL.md §6)
+function project(initialVelocity, decelerationRate = 0.998) {
+  return (initialVelocity / 1000) * decelerationRate / (1 - decelerationRate);
+}
+
+if (testimonialsViewport && revTrack) {
+  let isDragging = false;
+  let startX = 0;
+  let currentDeltaX = 0;
+  let lastX = 0;
+  let lastTime = 0;
+  let velocity = 0;
+
+  testimonialsViewport.addEventListener("pointerdown", (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    lastX = e.clientX;
+    lastTime = performance.now();
+    velocity = 0;
+    currentDeltaX = 0;
+    stopAutoSlide();
+
+    testimonialsViewport.setPointerCapture(e.pointerId);
+    revTrack.style.transition = "none";
+  });
+
+  testimonialsViewport.addEventListener("pointermove", (e) => {
+    if (!isDragging) return;
+    const now = performance.now();
+    const dt = now - lastTime;
+    const dx = e.clientX - lastX;
+
+    if (dt > 0) {
+      velocity = (dx / dt) * 1000; // px/sec
+    }
+    lastX = e.clientX;
+    lastTime = now;
+
+    let delta = e.clientX - startX;
+    const viewportWidth = testimonialsViewport.offsetWidth || 600;
+
+    // Apply rubberbanding at edges
+    const isAtStart = currentReviewIndex === 0 && delta > 0;
+    const isAtEnd = currentReviewIndex === totalReviews - 1 && delta < 0;
+
+    if (isAtStart || isAtEnd) {
+      delta = rubberband(delta, viewportWidth, 0.55);
+    }
+
+    currentDeltaX = delta;
+    const baseTranslate = -currentReviewIndex * viewportWidth;
+    revTrack.style.transform = `translateX(${baseTranslate + delta}px)`;
+  });
+
+  function handleDragEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    try {
+      testimonialsViewport.releasePointerCapture(e.pointerId);
+    } catch (_) {}
+
+    const viewportWidth = testimonialsViewport.offsetWidth || 600;
+    const projectedOffset = currentDeltaX + project(velocity, 0.992);
+
+    // If dragged or projected past 35% of slide, move to next/prev
+    if (projectedOffset < -viewportWidth * 0.35 && currentReviewIndex < totalReviews - 1) {
+      updateReviewSlide(currentReviewIndex + 1);
+    } else if (projectedOffset > viewportWidth * 0.35 && currentReviewIndex > 0) {
+      updateReviewSlide(currentReviewIndex - 1);
+    } else {
+      // Settle back to current
+      updateReviewSlide(currentReviewIndex);
+    }
+
+    startAutoSlide();
+  }
+
+  testimonialsViewport.addEventListener("pointerup", handleDragEnd);
+  testimonialsViewport.addEventListener("pointercancel", handleDragEnd);
+
   testimonialsViewport.addEventListener("mouseenter", stopAutoSlide);
   testimonialsViewport.addEventListener("mouseleave", startAutoSlide);
-
-  let touchStartX = 0;
-  let touchEndX = 0;
-  testimonialsViewport.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-  }, { passive: true });
-
-  testimonialsViewport.addEventListener("touchend", (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    if (touchStartX - touchEndX > 45) {
-      updateReviewSlide(currentReviewIndex + 1);
-      startAutoSlide();
-    } else if (touchEndX - touchStartX > 45) {
-      updateReviewSlide(currentReviewIndex - 1);
-      startAutoSlide();
-    }
-  }, { passive: true });
 }
 
 startAutoSlide();
 
 
+/* ===================================================
+   1. Audio-Haptics Web Audio API Engine (Feature 1 - SKILL.md §13)
+=================================================== */
+let audioCtx = null;
+let hapticsEnabled = localStorage.getItem("haptics_enabled") !== "false";
+
+function getAudioContext() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) audioCtx = new AudioContextClass();
+  }
+  if (audioCtx && audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function playHapticTick(freq = 1100, duration = 0.015, volume = 0.05) {
+  if (!hapticsEnabled) return;
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (_) {}
+}
+
+const soundToggleBtn = document.getElementById("soundToggle");
+const soundIcon = document.getElementById("soundIcon");
+
+function updateSoundToggleUI() {
+  if (!soundToggleBtn || !soundIcon) return;
+  if (hapticsEnabled) {
+    soundToggleBtn.classList.remove("muted");
+    soundIcon.className = "bi bi-volume-up-fill";
+  } else {
+    soundToggleBtn.classList.add("muted");
+    soundIcon.className = "bi bi-volume-mute-fill";
+  }
+}
+
+if (soundToggleBtn) {
+  updateSoundToggleUI();
+  soundToggleBtn.addEventListener("click", () => {
+    hapticsEnabled = !hapticsEnabled;
+    localStorage.setItem("haptics_enabled", hapticsEnabled ? "true" : "false");
+    updateSoundToggleUI();
+    if (hapticsEnabled) playHapticTick(1200, 0.02, 0.08);
+  });
+}
+
+// Hook into existing interactive events
+if (calcRevSlider) {
+  let lastTickVal = +calcRevSlider.value;
+  calcRevSlider.addEventListener("input", () => {
+    const currentVal = +calcRevSlider.value;
+    if (Math.abs(currentVal - lastTickVal) >= 15000000) {
+      playHapticTick(950, 0.012, 0.035);
+      lastTickVal = currentVal;
+    }
+  });
+}
+
+calcIndustryBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    playHapticTick(1200, 0.02, 0.06);
+  });
+});
+
+if (colorMode) {
+  colorMode.addEventListener("click", () => {
+    playHapticTick(1350, 0.022, 0.07);
+  });
+}
+
+/* ===================================================
+   2. Apple Wallet 3D Titanium Tier Pass (Feature 4 - SKILL.md §4, §12)
+=================================================== */
+const walletPassCard = document.getElementById("walletPassCard");
+if (walletPassCard) {
+  const passShine = walletPassCard.querySelector(".pass-shine");
+
+  walletPassCard.addEventListener("click", () => {
+    walletPassCard.classList.toggle("flipped");
+    playHapticTick(1050, 0.025, 0.06);
+  });
+
+  walletPassCard.addEventListener("pointermove", (e) => {
+    if (walletPassCard.classList.contains("flipped")) return;
+    const rect = walletPassCard.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const rotX = ((y - cy) / cy) * -6.5;
+    const rotY = ((x - cx) / cx) * 6.5;
+
+    walletPassCard.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+    if (passShine) {
+      passShine.style.opacity = "1";
+      passShine.style.background = `radial-gradient(circle at ${(x / rect.width) * 100}% ${(y / rect.height) * 100}%, rgba(255, 255, 255, 0.35) 0%, transparent 60%)`;
+    }
+  });
+
+  walletPassCard.addEventListener("pointerleave", () => {
+    if (walletPassCard.classList.contains("flipped")) return;
+    walletPassCard.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+    if (passShine) {
+      passShine.style.opacity = "0";
+    }
+  });
+}
+
+/* ===================================================
+   3. Armenian Tax Pulse Countdown Engine (Feature 5 - SKILL.md §16)
+=================================================== */
+function updateTaxPulseCountdown() {
+  const now = new Date();
+  let deadline = new Date(now.getFullYear(), now.getMonth(), 20, 23, 59, 59);
+  if (now > deadline) {
+    deadline = new Date(now.getFullYear(), now.getMonth() + 1, 20, 23, 59, 59);
+  }
+  const diffMs = deadline - now;
+  if (diffMs <= 0) return;
+
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  const dEl = document.getElementById("taxDays");
+  const hEl = document.getElementById("taxHours");
+  const mEl = document.getElementById("taxMins");
+
+  if (dEl) dEl.textContent = String(days).padStart(2, "0");
+  if (hEl) hEl.textContent = String(hours).padStart(2, "0");
+  if (mEl) mEl.textContent = String(mins).padStart(2, "0");
+}
+
+setInterval(updateTaxPulseCountdown, 1000);
+updateTaxPulseCountdown();
+
+const taxPulseBtn = document.getElementById("taxPulseBtn");
+if (taxPulseBtn) {
+  taxPulseBtn.addEventListener("click", (e) => {
+    playHapticTick(1100, 0.02, 0.06);
+    const serviceSelect = document.querySelector("#modalForm select[name='service']");
+    const messageInput = document.querySelector("#modalForm textarea[name='message']");
+    if (serviceSelect) serviceSelect.value = "tax";
+    if (messageInput) messageInput.value = "Հետաքրքրված եմ ՊԵԿ ընթացիկ հաշվետվությունների և տուգանքների կանխարգելման ծառայությամբ:";
+    openConsultationModal(e ? (e.currentTarget || e.target) : null);
+  });
+}
+
+
+/* ===================================================
+   iOS-Style Step Sheet & Drawer Engine (Feature 6 - SKILL.md §2, §3, §5, §6, §7, §9, §12)
+=================================================== */
+(function initStepSheetDrawer() {
+  const modal = document.getElementById("consultationModal");
+  const sheetCard = document.getElementById("sheetModalCard");
+  const grabBar = document.getElementById("sheetGrabBar");
+  const backBtn = document.getElementById("wizardBackBtn");
+  const progressFill = document.getElementById("wizardProgressFill");
+  const stepBadge = document.getElementById("stepIndicatorBadge");
+  const steps = document.querySelectorAll(".wizard-step");
+  const waBtn = document.getElementById("instantWaBtn");
+
+  // Hidden Form Fields
+  const inputBiz = document.getElementById("wizardBizType");
+  const inputTurnover = document.getElementById("wizardTurnover");
+  const inputGoal = document.getElementById("wizardGoal");
+  const inputService = document.getElementById("wizardService");
+  const inputMessage = document.getElementById("wizardMessage");
+
+  // Summary Pill Elements
+  const sumBiz = document.getElementById("sumBiz");
+  const sumTier = document.getElementById("sumTier");
+  const sumGoal = document.getElementById("sumGoal");
+
+  let currentStep = 1;
+  const totalSteps = 4;
+
+  const wizardState = {
+    biz: "it",
+    bizText: "ՏՏ և Ստարտափներ",
+    tier: "turnover",
+    tierText: "24-115 մլն ֏",
+    goal: "tax_opt",
+    goalText: "Հարկերի օպտիմալացում",
+    service: "tax"
+  };
+
+  function updateStepUI(step) {
+    currentStep = step;
+    steps.forEach(s => {
+      const sNum = parseInt(s.dataset.step, 10);
+      s.classList.toggle("active", sNum === step);
+    });
+
+    if (progressFill) {
+      const pct = (step / totalSteps) * 100;
+      progressFill.style.width = pct + "%";
+    }
+
+    if (backBtn) {
+      backBtn.style.visibility = step > 1 ? "visible" : "hidden";
+    }
+
+    if (stepBadge) {
+      const isHy = (document.documentElement.lang || "hy") === "hy";
+      stepBadge.textContent = isHy ? `Քայլ ${step} / ${totalSteps}` : `Step ${step} of ${totalSteps}`;
+    }
+
+    if (step === 4) {
+      if (sumBiz) sumBiz.textContent = wizardState.bizText;
+      if (sumTier) sumTier.textContent = wizardState.tierText;
+      if (sumGoal) sumGoal.textContent = wizardState.goalText;
+
+      // Update hidden form inputs for backend submit
+      if (inputBiz) inputBiz.value = wizardState.biz;
+      if (inputTurnover) inputTurnover.value = wizardState.tier;
+      if (inputGoal) inputGoal.value = wizardState.goal;
+      if (inputService) inputService.value = wizardState.service;
+      if (inputMessage) {
+        inputMessage.value = `[Հայտ Wizard-ից]: Ոլորտ: ${wizardState.bizText} | Շրջանառություն: ${wizardState.tierText} | Նպատակ: ${wizardState.goalText}`;
+      }
+    }
+  }
+
+  function goToStep(step) {
+    if (step < 1 || step > totalSteps) return;
+    updateStepUI(step);
+    if (typeof playHapticTick === "function") {
+      playHapticTick(1100 + step * 50, 0.015, 0.045);
+    }
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      goToStep(currentStep - 1);
+    });
+  }
+
+  // Step 1: Business Category Selection
+  const bizCards = document.querySelectorAll('.wizard-option-card[data-biz]');
+  bizCards.forEach(card => {
+    card.addEventListener("click", () => {
+      bizCards.forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      wizardState.biz = card.dataset.biz;
+      wizardState.service = card.dataset.service || "tax";
+      const h4 = card.querySelector("h4");
+      if (h4) wizardState.bizText = h4.textContent.trim();
+      if (typeof playHapticTick === "function") playHapticTick(1200, 0.018, 0.06);
+
+      setTimeout(() => goToStep(2), 160);
+    });
+  });
+
+  // Step 2: Turnover Tier Selection
+  const tierPills = document.querySelectorAll('.wizard-tier-pill[data-tier]');
+  tierPills.forEach(pill => {
+    pill.addEventListener("click", () => {
+      tierPills.forEach(p => p.classList.remove("active"));
+      pill.classList.add("active");
+      wizardState.tier = pill.dataset.tier;
+      const strong = pill.querySelector("strong");
+      if (strong) wizardState.tierText = strong.textContent.trim();
+      if (typeof playHapticTick === "function") playHapticTick(1250, 0.018, 0.06);
+
+      setTimeout(() => goToStep(3), 160);
+    });
+  });
+
+  // Step 3: Primary Goal Selection
+  const goalCards = document.querySelectorAll('.wizard-option-card[data-goal]');
+  goalCards.forEach(card => {
+    card.addEventListener("click", () => {
+      goalCards.forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      wizardState.goal = card.dataset.goal;
+      const h4 = card.querySelector("h4");
+      if (h4) wizardState.goalText = h4.textContent.trim();
+      if (typeof playHapticTick === "function") playHapticTick(1300, 0.018, 0.06);
+
+      setTimeout(() => goToStep(4), 160);
+    });
+  });
+
+  // Sync with Calculator on Modal Open
+  window.syncWizardWithCalculator = function() {
+    const revSlider = document.getElementById("calcRevSlider");
+    if (revSlider && tierPills.length > 0) {
+      const rev = +revSlider.value;
+      let matchedTier = "turnover";
+      if (rev < 24000000) matchedTier = "micro";
+      else if (rev <= 115000000) matchedTier = "turnover";
+      else if (rev <= 500000000) matchedTier = "vat";
+      else matchedTier = "enterprise";
+
+      tierPills.forEach(pill => {
+        const isMatch = pill.dataset.tier === matchedTier;
+        pill.classList.toggle("active", isMatch);
+        if (isMatch) {
+          wizardState.tier = matchedTier;
+          const strong = pill.querySelector("strong");
+          if (strong) wizardState.tierText = strong.textContent.trim();
+        }
+      });
+    }
+  };
+
+  // WhatsApp Handshake Button (+374 55 238228)
+  function getWhatsAppHandshakeUrl() {
+    const nameInput = document.getElementById("wizardNameInput");
+    const phoneInput = document.getElementById("wizardPhoneInput");
+    const name = nameInput ? nameInput.value.trim() : "";
+    const phone = phoneInput ? phoneInput.value.trim() : "";
+
+    const isHy = (document.documentElement.lang || 'hy') === 'hy';
+    let text = isHy
+      ? 'Ողջույն HM Consulting, ցանկանում եմ խորհրդատվություն ստանալ:\n'
+      : 'Hello HM Consulting, I would like to request a consultation:\n';
+    text += isHy ? `• Ոլորտ: ${wizardState.bizText}\n` : `• Industry: ${wizardState.bizText}\n`;
+    text += isHy ? `• Շրջանառություն: ${wizardState.tierText}\n` : `• Turnover: ${wizardState.tierText}\n`;
+    text += isHy ? `• Նպատակ: ${wizardState.goalText}` : `• Goal: ${wizardState.goalText}`;
+    if (name) text += isHy ? `\n• Անուն: ${name}` : `\n• Name: ${name}`;
+    if (phone) text += isHy ? `\n• Հեռախոս: ${phone}` : `\n• Phone: ${phone}`;
+
+    return `https://wa.me/37455238228?text=${encodeURIComponent(text)}`;
+  }
+
+  if (waBtn) {
+    // Proactively refresh href on touch/click/pointerdown
+    const refreshWaHref = () => {
+      waBtn.href = getWhatsAppHandshakeUrl();
+    };
+    waBtn.addEventListener("pointerdown", refreshWaHref);
+    waBtn.addEventListener("mouseenter", refreshWaHref);
+    waBtn.addEventListener("focus", refreshWaHref);
+    waBtn.addEventListener("click", () => {
+      refreshWaHref();
+      if (typeof playHapticTick === "function") playHapticTick(1400, 0.02, 0.07);
+    });
+  }
+
+  /* ===================================================
+     Direct 1:1 Gesture Drag-to-Dismiss & Rubber-banding
+     (SKILL.md §2, §3, §5, §6, §9)
+  =================================================== */
+  if (grabBar && sheetCard) {
+    let isDragging = false;
+    let startY = 0;
+    let currentY = 0;
+    let velocityHistory = [];
+
+    // Apple projection formula (SKILL.md §6)
+    function projectResting(v, decelRate = 0.992) {
+      return (v / 1000) * decelRate / (1 - decelRate);
+    }
+
+    // Rubberband resistance (SKILL.md §9)
+    function rubberband(offset, dimension = 150, constant = 0.45) {
+      return (offset * dimension * constant) / (dimension + constant * Math.abs(offset));
+    }
+
+    grabBar.addEventListener("pointerdown", (e) => {
+      isDragging = true;
+      grabBar.setPointerCapture(e.pointerId);
+      startY = e.clientY;
+      currentY = e.clientY;
+      velocityHistory = [{ y: e.clientY, t: performance.now() }];
+      sheetCard.style.transition = "none";
+    });
+
+    grabBar.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      currentY = e.clientY;
+      const now = performance.now();
+      velocityHistory.push({ y: currentY, t: now });
+      if (velocityHistory.length > 5) velocityHistory.shift();
+
+      const dy = currentY - startY;
+
+      if (dy < 0) {
+        // Dragging upward: apply rubberband resistance
+        const damped = rubberband(dy, 150, 0.45);
+        sheetCard.style.transform = `translateY(${damped}px)`;
+      } else {
+        // Dragging downward: direct 1:1 tracking
+        sheetCard.style.transform = `translateY(${dy}px)`;
+      }
+    });
+
+    function endDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      try { grabBar.releasePointerCapture(e.pointerId); } catch (_) {}
+
+      const dy = currentY - startY;
+      let velocity = 0;
+      if (velocityHistory.length >= 2) {
+        const first = velocityHistory[0];
+        const last = velocityHistory[velocityHistory.length - 1];
+        const dt = last.t - first.t;
+        if (dt > 0) {
+          velocity = (last.y - first.y) / dt; // px/ms
+        }
+      }
+
+      const projected = dy + projectResting(velocity * 1000);
+
+      if (projected > 140 || dy > 110) {
+        // Momentum flick or dragged past dismiss threshold
+        sheetCard.style.transition = "transform 0.28s cubic-bezier(0.32, 0.72, 0, 1)";
+        sheetCard.style.transform = "translateY(110%)";
+        if (typeof playHapticTick === "function") playHapticTick(900, 0.02, 0.05);
+
+        setTimeout(() => {
+          if (typeof closeConsultationModal === "function") {
+            closeConsultationModal();
+          }
+          sheetCard.style.transform = "";
+          sheetCard.style.transition = "";
+          goToStep(1);
+        }, 280);
+      } else {
+        // Settle back to resting state with Apple critically damped spring
+        sheetCard.style.transition = "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
+        sheetCard.style.transform = "translateY(0)";
+        setTimeout(() => {
+          sheetCard.style.transition = "";
+        }, 400);
+      }
+    }
+
+    grabBar.addEventListener("pointerup", endDrag);
+    grabBar.addEventListener("pointercancel", endDrag);
+  }
+
+  // Hook into openConsultationModal to reset to step 1 and sync calculator
+  window.resetWizardStep = () => goToStep(1);
+  const originalOpen = window.openConsultationModal;
+  window.openConsultationModal = function(originEl) {
+    if (typeof originalOpen === "function") originalOpen(originEl);
+    if (typeof window.syncWizardWithCalculator === "function") {
+      window.syncWizardWithCalculator();
+    }
+  };
+})();
