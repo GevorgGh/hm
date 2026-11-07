@@ -67,6 +67,13 @@ const headerEl = document.getElementById("header");
 const parallaxImages = document.querySelectorAll(".scroll-pic-img");
 
 function updateParallaxPics(scrollPos) {
+  // Disable parallax translateY shifting on mobile & tablets to eliminate white gaps/cutouts
+  if (window.innerWidth <= 850) {
+    parallaxImages.forEach(img => {
+      img.style.transform = "none";
+    });
+    return;
+  }
   const winHeight = window.innerHeight;
   parallaxImages.forEach(img => {
     const rect = img.getBoundingClientRect();
@@ -174,6 +181,14 @@ const calcRevSlider = document.getElementById("calcRevSlider");
 const calcRevDisplay = document.getElementById("calcRevDisplay");
 const calcSavingsVal = document.getElementById("calcSavingsVal");
 const calcTierVal = document.getElementById("calcTierVal");
+const calcPkgIndustry = document.getElementById("calcPkgIndustry");
+const calcPkgBadge = document.getElementById("calcPkgBadge");
+const calcRegimeVal = document.getElementById("calcRegimeVal");
+const pkgB1 = document.getElementById("pkgB1");
+const pkgB2 = document.getElementById("pkgB2");
+const pkgB3 = document.getElementById("pkgB3");
+const pkgB4 = document.getElementById("pkgB4");
+const calcPkgLead = document.getElementById("calcPkgLead");
 const calcGlowFill = document.getElementById("calcGlowFill");
 const calcIndustryBtns = document.querySelectorAll("#calcIndustryGroup .ind-btn");
 const calcCtaBtn = document.getElementById("calcCtaBtn");
@@ -185,6 +200,117 @@ let savingsAnimId = null;
 
 function formatDram(num) {
   return "֏ " + Math.round(num).toLocaleString("en-US");
+}
+
+function getPackageTierDetails(industry, rev, isHy) {
+  let industryTag = "";
+  let tierName = "";
+  let regimeText = "";
+  let b1 = "", b2 = "", b3 = "", b4 = "";
+  let leadText = isHy 
+    ? "Անձնական ավագ հաշվապահ + հարկային խորհրդատու" 
+    : "Dedicated Senior Accountant + Tax Advisor";
+
+  if (industry === "it") {
+    industryTag = isHy ? "ՏՏ / ՍՏԱՐՏԱՓ" : "IT / STARTUP";
+    if (rev < 24000000) {
+      tierName = isHy ? "IT Micro Spark (0% Հարկ)" : "IT Micro Spark (0% Tax)";
+      regimeText = isHy ? "Միկրոձեռնարկատիրություն 0%" : "Microenterprise 0%";
+      b1 = isHy ? "ՊԵԿ հաշվետվությունների ամբողջական կազմում" : "SRC tax returns filing & compliance";
+      b2 = isHy ? "Արտարժութային հաշիվների & Stripe/Wise հաշվառում" : "Foreign currency & Stripe/Wise accounting";
+      b3 = isHy ? "Հավաստագրված IT արտոնությունների վարում" : "Certified IT tax exemption maintenance";
+      b4 = isHy ? "0% տուգանքի 100% ֆինանսական երաշխիք" : "100% financial guarantee: 0% audit fines";
+    } else if (rev <= 115000000) {
+      tierName = isHy ? "IT Venture Pro (Շրջհարկ 5%)" : "IT Venture Pro (5% Turnover)";
+      regimeText = isHy ? "Շրջանառության հարկ 5%" : "Turnover Tax 5%";
+      b1 = isHy ? "ՊԵԿ եռամսյակային & ամսական հաշվետվություններ" : "SRC monthly & quarterly tax filings";
+      b2 = isHy ? "1C / ArmSoft ավտոմատացված հաշվապահություն" : "Full-cycle 1C / ArmSoft automation";
+      b3 = isHy ? "Աշխատավարձերի և կադրային փաստաթղթավորում" : "Staff payroll calculation & HR management";
+      b4 = isHy ? "100% պաշտպանություն ՊԵԿ ստուգումներից" : "Full SRC tax audit shield & legal defense";
+    } else {
+      tierName = isHy ? "IT Enterprise Shield (ԱԱՀ)" : "IT Enterprise Shield (VAT)";
+      regimeText = isHy ? "Ընդհանուր համակարգ (ԱԱՀ 20% + Շահութահարկ)" : "General Regime (VAT 20% + Profit Tax)";
+      b1 = isHy ? "ԱԱՀ-ի և շահութահարկի խորացված օպտիմալացում" : "Advanced VAT & Profit Tax optimization";
+      b2 = isHy ? "Միջազգային ստանդարտներ (ՖՀՄՍ/IFRS) & 1C Պրո" : "IFRS international financial statements & 1C";
+      b3 = isHy ? "Օտարերկրյա պայմանագրեր & WHT պահումներ" : "Cross-border contracts & WHT tax compliance";
+      b4 = isHy ? "Անսահմանափակ աուդիտորական պաշտպանություն & NDA" : "Unlimited audit defense & strict NDA indemnity";
+    }
+  } else if (industry === "trade") {
+    industryTag = isHy ? "ԱՌԵՎՏՈՒՐ ԵՎ E-COMMERCE" : "TRADE & E-COMMERCE";
+    if (rev < 24000000) {
+      tierName = isHy ? "Retail Micro Start" : "Retail Micro Start";
+      regimeText = isHy ? "Միկրոձեռնարկատիրություն / Շրջհարկ" : "Micro / Turnover Tax";
+      b1 = isHy ? "ՀԴՄ և էլեկտրոնային հաշիվ-ապրանքագրերի հաշվառում" : "POS receipts & e-invoicing supervision";
+      b2 = isHy ? "ՊԵԿ պարտադիր հաշվետվությունների ներկայացում" : "Timely SRC tax declaration filings";
+      b3 = isHy ? "Ապրանքային մնացորդների առաջնային վերահսկողություն" : "Inventory balance primary reconciliation";
+      b4 = isHy ? "0% տուգանքի 100% երաշխիք" : "100% zero-penalty warranty";
+    } else if (rev <= 115000000) {
+      tierName = isHy ? "Commercial Standard (Շրջհարկ 5%)" : "Commercial Standard (5% Turnover)";
+      regimeText = isHy ? "Շրջանառության հարկ 5% (1.5% փաստաթղթավորմամբ)" : "Turnover Tax 5% (1.5% documented)";
+      b1 = isHy ? "Ձեռքբերումների փաստաթղթավորում & 1.5% հարկի իջեցում" : "Purchase doc verification & 1.5% tax reduction";
+      b2 = isHy ? "1C Առևտրի Կառավարում և ArmSoft համակցում" : "1C Trade Management & ArmSoft integration";
+      b3 = isHy ? "Աշխատավարձի հաշվարկ և կադրային գործավարություն" : "Staff payroll & HR documentation";
+      b4 = isHy ? "ՊԵԿ գույքագրման ստուգումների լիարժեք ուղեկցում" : "Complete SRC inventory audit defense";
+    } else {
+      tierName = isHy ? "Retail Scale Enterprise (ԱԱՀ)" : "Retail Scale Enterprise (VAT)";
+      regimeText = isHy ? "Ընդհանուր համակարգ (ԱԱՀ 20% + Շահութահարկ)" : "General Regime (VAT 20% + Profit Tax)";
+      b1 = isHy ? "ԱԱՀ-ի հաշվանցումների և վերադարձի կառավարում" : "VAT offset management & SRC refund filing";
+      b2 = isHy ? "Պահեստների և մատակարարների 1C ավտոմատացում" : "Warehouse & supplier automated 1C ledger";
+      b3 = isHy ? "Ներմուծման մաքսային հայտարարագրերի հաշվառում" : "Customs import declaration reconciliations";
+      b4 = isHy ? "Աուդիտորական լիակատար ֆինանսական պատասխանատվություն" : "Full financial liability audit protection";
+    }
+  } else if (industry === "services") {
+    industryTag = isHy ? "ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ" : "SERVICES";
+    if (rev < 24000000) {
+      tierName = isHy ? "Service Starter Pack" : "Service Starter Pack";
+      regimeText = isHy ? "Միկրոձեռնարկատիրություն 0%" : "Microenterprise 0%";
+      b1 = isHy ? "ՊԵԿ հարկային հաշվետվությունների ներկայացում" : "SRC tax compliance & declarations";
+      b2 = isHy ? "Ծառայությունների մատուցման էլեկտրոնային հաշիվներ" : "Electronic service invoice generation";
+      b3 = isHy ? "Բանկային գործառնությունների և վճարների հաշվառում" : "Bank ledger & payment reconciliation";
+      b4 = isHy ? "0% տուգանքի ֆինանսական երաշխիք" : "0% penalty financial guarantee";
+    } else if (rev <= 115000000) {
+      tierName = isHy ? "Business Core Plan (Շրջհարկ 5%)" : "Business Core Plan (5% Turnover)";
+      regimeText = isHy ? "Շրջանառության հարկ 5%" : "Turnover Tax 5%";
+      b1 = isHy ? "ՊԵԿ եռամսյակային & ամսական հաշվետվություններ" : "Monthly & quarterly SRC tax submissions";
+      b2 = isHy ? "1C / ArmSoft ամբողջական հաշվապահական սպասարկում" : "Full 1C / ArmSoft professional service";
+      b3 = isHy ? "Աշխատակիցների գրանցում, արձակուրդային և հիվանդաթերթիկ" : "Employee contracts, vacation & sick leave pay";
+      b4 = isHy ? "Հարկային ռիսկերի վերլուծություն և աուդիտորի պաշտպանություն" : "Tax risk diagnostic & audit representation";
+    } else {
+      tierName = isHy ? "Corporate Executive Tier (ԱԱՀ)" : "Corporate Executive Tier (VAT)";
+      regimeText = isHy ? "Ընդհանուր համակարգ (ԱԱՀ + Շահութահարկ)" : "General Regime (VAT + Profit Tax)";
+      b1 = isHy ? "Շահութահարկի և ծախսերի օրինական օպտիմալացում" : "Legal Profit Tax & expense deduction optimization";
+      b2 = isHy ? "Կառավարչական հաշվետվություններ ղեկավարության համար" : "Executive managerial P&L & cashflow reporting";
+      b3 = isHy ? "Պայմանագրերի հարկային փորձաքննություն և NDA" : "Contract tax vetting & NDA confidentiality";
+      b4 = isHy ? "Անձնական աուդիտորական խումբ 24/7 հասանելիությամբ" : "Dedicated audit team with 24/7 priority SLA";
+    }
+  } else {
+    // prod
+    industryTag = isHy ? "ԱՐՏԱԴՐՈՒԹՅՈՒՆ ԵՎ ՆԵՐՄՈՒԾՈՒՄ" : "MANUFACTURING & IMPORT";
+    if (rev < 24000000) {
+      tierName = isHy ? "Artisan Micro Unit" : "Artisan Micro Unit";
+      regimeText = isHy ? "Միկրոձեռնարկատիրություն 0%" : "Microenterprise 0%";
+      b1 = isHy ? "Արտադրական միկրոյի ՊԵԿ հաշվետվությունների ներկայացում" : "Artisan micro tax declaration filings";
+      b2 = isHy ? "Հումքի առաջնային ծախսագրման վարում" : "Raw material intake primary documentation";
+      b3 = isHy ? "Աշխատավարձի և եկամտային հարկի հաշվարկ" : "Payroll & income tax calculation";
+      b4 = isHy ? "0% տուգանքի երաշխիք" : "0% penalty legal warranty";
+    } else if (rev <= 115000000) {
+      tierName = isHy ? "Production Standard (Շրջհարկ 3.5%)" : "Production Standard (3.5% Turnover)";
+      regimeText = isHy ? "Շրջանառության հարկ 3.5% (Արտադրություն)" : "Turnover Tax 3.5% (Manufacturing)";
+      b1 = isHy ? "Ինքնարժեքի հաշվարկ & նորմատիվների կազմում 1C-ում" : "Cost accounting & recipe norms in 1C";
+      b2 = isHy ? "Հումքի ձեռքբերման և արտադրանքի ելքագրման վարում" : "Raw materials purchase & product release control";
+      b3 = isHy ? "Արտադրական անձնակազմի հերթափոխային աշխատավարձ" : "Shift payroll & worker labor compliance";
+      b4 = isHy ? "ՊԵԿ տեսուչների հետ շփման 100% ստանձնում" : "100% SRC inspector liaison & legal shield";
+    } else {
+      tierName = isHy ? "Industrial Export Master (ԱԱՀ)" : "Industrial Export Master (VAT)";
+      regimeText = isHy ? "Ընդհանուր համակարգ (ԱԱՀ 20% / 0% Արտահանման ԱԱՀ)" : "General Regime (20% VAT / 0% Export VAT)";
+      b1 = isHy ? "Արտահանման 0% ԱԱՀ-ի վերադարձի և հաշվանցման ապահովում" : "Export 0% VAT refund & customs offset filing";
+      b2 = isHy ? "Արտադրական 1C ERP ամբողջական համակարգ" : "Complete Manufacturing 1C ERP ledger";
+      b3 = isHy ? "Մաքսային հայտարարագրերի և հումքի մաքսազերծման հաշվառում" : "Customs declarations & raw material clearing";
+      b4 = isHy ? "Ֆինանսական տնօրենի (CFO) և աուդիտորի մշտական հսկողություն" : "Fractional CFO & Head Auditor continuous oversight";
+    }
+  }
+
+  return { industryTag, tierName, regimeText, b1, b2, b3, b4, leadText };
 }
 
 /* Apple-style critically damped smooth number interpolation (SKILL.md §4, §11) */
@@ -217,21 +343,13 @@ function updateCalculator(skipLerp = false) {
   calcRevSlider.style.background = `linear-gradient(to right, var(--und-color) 0%, var(--und-color) ${pct}%, rgba(12, 77, 125, 0.12) ${pct}%, rgba(12, 77, 125, 0.12) 100%)`;
 
   let rate = 0.15;
-  let tierName = "IT Startup Scale";
+  if (currentIndustry === "it") rate = 0.15;
+  else if (currentIndustry === "trade") rate = 0.09;
+  else if (currentIndustry === "services") rate = 0.12;
+  else if (currentIndustry === "prod") rate = 0.14;
 
-  if (currentIndustry === "it") {
-    rate = 0.15;
-    tierName = rev > 80000000 ? "IT Enterprise Shield" : "IT Venture Pro";
-  } else if (currentIndustry === "trade") {
-    rate = 0.09;
-    tierName = rev > 60000000 ? "Retail Scale Partner" : "Commercial Standard";
-  } else if (currentIndustry === "services") {
-    rate = 0.12;
-    tierName = rev > 50000000 ? "Corporate Executive Tier" : "Business Core Plan";
-  } else if (currentIndustry === "prod") {
-    rate = 0.14;
-    tierName = rev > 100000000 ? "Industrial Export Master" : "Production Standard";
-  }
+  const isHy = (localStorage.getItem("lang") || "hy") === "hy";
+  const pkg = getPackageTierDetails(currentIndustry, rev, isHy);
 
   targetSavings = Math.round(rev * rate);
   if (skipLerp) {
@@ -243,9 +361,23 @@ function updateCalculator(skipLerp = false) {
     }
   }
 
-  if (calcTierVal) {
-    calcTierVal.textContent = tierName;
+  // Update Package Tier Elements
+  if (calcTierVal) calcTierVal.textContent = pkg.tierName;
+  if (calcPkgIndustry) calcPkgIndustry.textContent = pkg.industryTag;
+  if (calcPkgBadge) {
+    calcPkgBadge.innerHTML = `<i class="bi bi-shield-check"></i> 0% ${isHy ? "ՏՈՒԳԱՆՔ" : "PENALTY"}`;
   }
+  if (calcRegimeVal) {
+    calcRegimeVal.innerHTML = `<i class="bi bi-receipt-cutoff"></i> <span>${pkg.regimeText}</span>`;
+  }
+  if (pkgB1) pkgB1.textContent = pkg.b1;
+  if (pkgB2) pkgB2.textContent = pkg.b2;
+  if (pkgB3) pkgB3.textContent = pkg.b3;
+  if (pkgB4) pkgB4.textContent = pkg.b4;
+  if (calcPkgLead) {
+    calcPkgLead.textContent = pkg.leadText;
+  }
+
   if (calcGlowFill) {
     const fillPercent = Math.min(Math.max((rev / 250000000) * 100, 15), 100);
     calcGlowFill.style.width = `${fillPercent}%`;
@@ -405,6 +537,10 @@ function changeLanguage(lang) {
   localStorage.setItem("lang", lang);
   const sel = document.getElementById("languages");
   if (sel) sel.value = lang;
+
+  if (typeof updateCalculator === "function") {
+    updateCalculator(true);
+  }
 }
 
 /* ===================================================
@@ -428,6 +564,11 @@ function openConsultationModal(originEl) {
     consultationModal.classList.add("active");
     consultationModal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+
+    // Auto-hide floating action dock while modal is open so it never clutters or overlaps
+    const floatingDock = document.querySelector(".floating-dock");
+    if (floatingDock) floatingDock.style.display = "none";
+
     if (typeof window.syncWizardWithCalculator === "function") {
       window.syncWizardWithCalculator();
     }
@@ -442,6 +583,10 @@ function closeConsultationModal() {
     consultationModal.classList.remove("active");
     consultationModal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+
+    // Restore floating action dock
+    const floatingDock = document.querySelector(".floating-dock");
+    if (floatingDock) floatingDock.style.display = "";
   }
 }
 
@@ -780,6 +925,7 @@ if (walletPassCard) {
   });
 
   walletPassCard.addEventListener("pointermove", (e) => {
+    if (window.innerWidth <= 768) return; // Disable 3D tilt tracking on mobile/touch
     if (walletPassCard.classList.contains("flipped")) return;
     const rect = walletPassCard.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -1033,8 +1179,11 @@ if (taxPulseBtn) {
     waBtn.addEventListener("pointerdown", refreshWaHref);
     waBtn.addEventListener("mouseenter", refreshWaHref);
     waBtn.addEventListener("focus", refreshWaHref);
-    waBtn.addEventListener("click", () => {
-      refreshWaHref();
+    waBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const url = getWhatsAppHandshakeUrl();
+      waBtn.href = url;
+      window.open(url, "_blank", "noopener,noreferrer");
       if (typeof playHapticTick === "function") playHapticTick(1400, 0.02, 0.07);
     });
   }
@@ -1141,5 +1290,94 @@ if (taxPulseBtn) {
     if (typeof window.syncWizardWithCalculator === "function") {
       window.syncWizardWithCalculator();
     }
+  };
+})();
+
+
+/* ===================================================
+   Mobile Hamburger Navigation Drawer
+   (Apple spring open/close, overlay dismiss, nav link close)
+=================================================== */
+(function initMobileNav() {
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+  const drawer = document.getElementById("mobileNavDrawer");
+  const overlay = document.getElementById("mobileNavOverlay");
+  const mobileCtaBtn = document.getElementById("mobileNavCtaBtn");
+
+  if (!hamburgerBtn || !drawer || !overlay) return;
+
+  let isOpen = false;
+
+  function openDrawer() {
+    isOpen = true;
+    hamburgerBtn.classList.add("open");
+    hamburgerBtn.setAttribute("aria-expanded", "true");
+    overlay.classList.add("visible");
+    requestAnimationFrame(() => {
+      overlay.classList.add("active");
+      drawer.classList.add("open");
+    });
+    document.body.style.overflow = "hidden";
+    if (typeof playHapticTick === "function") playHapticTick(1100, 0.012, 0.04);
+  }
+
+  function closeDrawer() {
+    isOpen = false;
+    hamburgerBtn.classList.remove("open");
+    hamburgerBtn.setAttribute("aria-expanded", "false");
+    overlay.classList.remove("active");
+    drawer.classList.remove("open");
+    document.body.style.overflow = "";
+    setTimeout(() => overlay.classList.remove("visible"), 300);
+    if (typeof playHapticTick === "function") playHapticTick(950, 0.01, 0.03);
+  }
+
+  hamburgerBtn.addEventListener("click", () => {
+    if (isOpen) closeDrawer(); else openDrawer();
+  });
+
+  overlay.addEventListener("click", closeDrawer);
+
+  // Close on any nav link click
+  drawer.querySelectorAll(".mobile-nav-link").forEach(link => {
+    link.addEventListener("click", () => {
+      setTimeout(closeDrawer, 80);
+    });
+  });
+
+  // CTA button inside drawer opens consultation modal
+  if (mobileCtaBtn) {
+    mobileCtaBtn.addEventListener("click", () => {
+      closeDrawer();
+      setTimeout(() => {
+        if (typeof openConsultationModal === "function") {
+          openConsultationModal(mobileCtaBtn);
+        }
+      }, 320);
+    });
+  }
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen) closeDrawer();
+  });
+
+  // Mirror active nav state into drawer links
+  const desktopLinks = document.querySelectorAll("#header > ul > li > a");
+  const mobileLinks = drawer.querySelectorAll(".mobile-nav-link");
+
+  const syncActive = () => {
+    desktopLinks.forEach((dl, i) => {
+      if (mobileLinks[i]) {
+        mobileLinks[i].classList.toggle("active", dl.classList.contains("active"));
+      }
+    });
+  };
+
+  // Sync on scroll (piggyback on existing updateActiveNav)
+  const origUpdateActiveNav = window.updateActiveNav;
+  window.updateActiveNav = function() {
+    if (typeof origUpdateActiveNav === "function") origUpdateActiveNav();
+    syncActive();
   };
 })();

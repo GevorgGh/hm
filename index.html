@@ -5,11 +5,11 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet" />
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>HM Consulting</title>
     <link href="./images/logo.svg" rel="icon" type="image/svg+xml" />
-    <link href="./style.css?v=2.3" rel="stylesheet" />
-    <script defer="" src="app.js?v=2.3"></script>
+    <link href="./style.css?v=4.1" rel="stylesheet" />
+    <script defer="" src="app.js?v=4.1"></script>
 </head>
 
 <body>
@@ -50,6 +50,11 @@
             <li><a data-i18n="nav_reviews" href="#reviews"></a></li>
             <li><a data-i18n="text_5" href="#contactUs"></a></li>
         </ul>
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
         <div class="header-actions">
             <button type="button" id="soundToggle" class="header-theme-btn" title="Audio Haptics" aria-label="Toggle Audio Haptics">
                 <i class="bi bi-volume-up-fill" id="soundIcon"></i>
@@ -69,6 +74,22 @@
             <button type="button" id="headerCtaBtn" class="header-consult-btn" data-i18n="header_consult"></button>
         </div>
     </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <nav class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile navigation">
+        <ul>
+            <li><a data-i18n="text_1" href="#main" class="mobile-nav-link"></a></li>
+            <li><a data-i18n="text_2" href="#aboutUs" class="mobile-nav-link"></a></li>
+            <li><a data-i18n="text_3" href="#services" class="mobile-nav-link"></a></li>
+            <li><a data-i18n="calc_badge" href="#calculatorSection" class="mobile-nav-link"></a></li>
+            <li><a data-i18n="nav_reviews" href="#reviews" class="mobile-nav-link"></a></li>
+            <li><a data-i18n="text_5" href="#contactUs" class="mobile-nav-link"></a></li>
+        </ul>
+        <div class="mobile-nav-divider"></div>
+        <button type="button" class="mobile-nav-cta" id="mobileNavCtaBtn" data-i18n="header_consult"></button>
+    </nav>
+
 
     <!-- Armenian Tax Pulse Live Status Banner (Feature 5) -->
     <div id="taxPulseBanner" class="tax-pulse-bar">
@@ -535,38 +556,60 @@
                         <div class="savings-glow-bar"><div class="glow-fill" id="calcGlowFill" style="width: 55%;"></div></div>
                     </div>
 
-                    <!-- Apple Wallet 3D Titanium Tier Pass (Feature 4 - SKILL.md §4, §12) -->
+                    <!-- Premium Apple Service Package Showcase (Feature 4 - SKILL.md §4, §12) -->
                     <div class="wallet-pass-wrapper" id="walletPassWrapper">
-                        <div class="wallet-pass-3d" id="walletPassCard" title="Click to flip / Շրջել քարտը">
+                        <div class="wallet-pass-3d" id="walletPassCard" title="Click to view guarantee / Սեղմեք՝ երաշխիքը տեսնելու համար">
                             <div class="pass-face pass-front">
                                 <div class="pass-header-row">
-                                    <div class="pass-chip"><i class="bi bi-cpu-fill"></i></div>
-                                    <span class="pass-brand">HM CONSULTING · TITANIUM</span>
-                                    <span class="pass-status-pill"><i class="bi bi-patch-check-fill"></i> 0% ՌԻՍԿ</span>
+                                    <div class="pass-chip-box">
+                                        <i class="bi bi-shield-check text-green"></i>
+                                        <span class="pass-brand" id="calcPkgIndustry">ՏՏ / ՍՏԱՐՏԱՓ</span>
+                                    </div>
+                                    <span class="pass-status-pill" id="calcPkgBadge"><i class="bi bi-patch-check-fill"></i> 0% ՏՈՒԳԱՆՔ</span>
                                 </div>
+                                
                                 <div class="pass-body">
                                     <span class="pass-caption" data-i18n="calc_stat_tier_title">Առաջարկվող Փաթեթ</span>
-                                    <h3 id="calcTierVal" class="pass-tier-name">IT Venture Pro</h3>
+                                    <h3 id="calcTierVal" class="pass-tier-name">IT Venture Pro (Շրջհարկ)</h3>
+                                    <div class="pass-regime-pill" id="calcRegimeVal">
+                                        <i class="bi bi-receipt-cutoff"></i>
+                                        <span>Շրջանառության հարկ 5%</span>
+                                    </div>
                                 </div>
+
+                                <!-- Package Inclusions List -->
+                                <ul class="pass-benefits-list" id="calcPkgBenefits">
+                                    <li><i class="bi bi-check-circle-fill text-green"></i> <span id="pkgB1">ՊԵԿ ամսական &amp; տարեկան հաշվետվություններ</span></li>
+                                    <li><i class="bi bi-check-circle-fill text-green"></i> <span id="pkgB2">1C / ArmSoft ավտոմատացված հաշվառում</span></li>
+                                    <li><i class="bi bi-check-circle-fill text-green"></i> <span id="pkgB3">Աշխատավարձերի և կադրերի վարում</span></li>
+                                    <li><i class="bi bi-check-circle-fill text-green"></i> <span id="pkgB4">100% ՊԵԿ ստուգումների պաշտպանություն</span></li>
+                                </ul>
+
                                 <div class="pass-footer-row">
-                                    <span class="pass-serial">HM · 2026 · SRC · SHIELD</span>
-                                    <span class="pass-flip-hint"><i class="bi bi-arrow-repeat"></i> <span data-i18n="wallet_card_flip">Շրջել</span></span>
+                                    <span class="pass-serial"><i class="bi bi-person-check-fill"></i> <span id="calcPkgLead">Անձնական ավագ հաշվապահ</span></span>
+                                    <span class="pass-flip-hint"><i class="bi bi-shield-lock-fill"></i> <span data-i18n="wallet_card_flip">Երաշխիք</span></span>
                                 </div>
                                 <div class="pass-shine"></div>
                             </div>
+
                             <div class="pass-face pass-back">
                                 <div class="pass-back-content">
                                     <div class="back-seal"><i class="bi bi-shield-fill-check"></i></div>
-                                    <h4 data-i18n="wallet_card_back_title">HM Consulting Երաշխիք</h4>
+                                    <h4 data-i18n="wallet_card_back_title">HM Consulting Պաշտոնական Երաշխիք</h4>
                                     <p data-i18n="wallet_card_back_desc">ՊԵԿ ստուգումների լիակատար պատասխանատվություն, 0% տուգանքի երաշխիք և NDA գաղտնիություն:</p>
-                                    <div class="back-badge"><i class="bi bi-lock-fill"></i> 100% ՊԵԿ ԵՐԱՇԽԻՔ</div>
+                                    <div class="back-features">
+                                        <div class="back-feat-item"><i class="bi bi-lock-fill text-orange"></i> 100% NDA Գաղտնիություն</div>
+                                        <div class="back-feat-item"><i class="bi bi-currency-exchange text-green"></i> Տուգանքների փոխհատուցում</div>
+                                        <div class="back-feat-item"><i class="bi bi-award-fill text-blue"></i> 10+ Տարվա փորձառություն</div>
+                                    </div>
+                                    <div class="back-badge"><i class="bi bi-shield-shaded"></i> ԼԻԱՐԺԵՔ ՊԵԿ ՊԱՇՏՊԱՆՈՒԹՅՈՒՆ</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <button type="button" id="calcCtaBtn" class="calc-claim-btn">
-                        <span data-i18n="calc_btn"></span>
+                        <span data-i18n="calc_btn">Ամրագրել Այս Փաթեթով Խորհրդատվություն</span>
                         <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
